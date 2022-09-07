@@ -14,7 +14,7 @@ class CPU
         class Context
         {
         private:
-            static const unsigned int STACK_SIZE = Traits<CPU>::STACK_SIZE;
+            static const unsigned int STACK_SIZE = Traits<CPU>::STACK_SIZE; //Declaracao de tipo
         public:
             Context() { _stack = 0; }
 
