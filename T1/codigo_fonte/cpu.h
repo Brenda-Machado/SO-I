@@ -9,36 +9,47 @@ __BEGIN_API
 
 class CPU
 {
-    public:
+public:
+    class Context
+    {
+    private:
+        static const unsigned int STACK_SIZE = Traits<CPU>::STACK_SIZE;
 
-        class Context
+    public:
+        Context()
         {
-        private:
-            static const unsigned int STACK_SIZE = Traits<CPU>::STACK_SIZE;
-        public:
-            Context() { _stack = 0; }
+            _stack = 0;
+        }
 
-            template<typename ... Tn>
-            Context(void (* func)(Tn ...), Tn ... an);
+        template <typename... Tn>
+        Context(void (*func)(Tn...), Tn... an)
+        {
+            _stack = new char[STACK_SIZE];
+            getcontext(&_context);
+            _context.uc_link = 0;
+            _context.uc_stack.ss_sp = _stack;
+            _context.uc_stack.ss_size = STACK_SIZE;
+            _context.uc_stack.ss_flags = 0;
+            int n = sizeof...(Tn);
+            makecontext(&_context, (void (*)())func, n, an...);
+        }
 
-            ~Context();
+        ~Context();
 
-            void save();
-            void load();
+        void save();
+        void load();
 
-        private:            
-            char *_stack;
-        public:
-            ucontext_t _context;
-        };
+    private:
+        char *_stack;
 
     public:
+        ucontext_t _context;
+    };
 
-        static void switch_context(Context *from, Context *to);
-
+public:
+    static void switch_context(Context *from, Context *to);
 };
 
 __END_API
 
 #endif
-
