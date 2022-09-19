@@ -20,8 +20,10 @@ public:
      * PS: devido ao template, este método deve ser implementado neste mesmo arquivo .h
      */ 
     template<typename ... Tn>
-    Thread(void (* entry)(Tn ...), Tn ... an);
-
+    Thread(void (* entry)(Tn ...), Tn ... an){
+		_context = new Context(entry, an...);
+		_id = _last_id++;
+	}
     /*
      * Retorna a Thread que está em execução.
      */ 
@@ -50,11 +52,19 @@ public:
     /*
      * Qualquer outro método que você achar necessário para a solução.
      */ 
-
+	
+	// Retornar contexto da thread
+	Context* context();
+	
+	// Constutor vazio para criar thread main
+	Thread();
 private:
     int _id;
     Context * volatile _context;
     static Thread * _running;
+
+	static int _last_id;
+	static Thread* _main;
 
     /*
      * Qualquer outro atributo que você achar necessário para a solução.
@@ -64,3 +74,10 @@ private:
 __END_API
 
 #endif
+/*
+template<typename ... Tn>
+Thread::Thread(void (* entry)(Tn ...), Tn ... an){
+	_context = Context(entry, an...);
+	_id = ++_last_id;
+}
+*/
