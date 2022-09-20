@@ -11,11 +11,13 @@ Thread * Thread::_running = nullptr;
  * Retorna o ID da thread.
  */ 
 int Thread::id(){
+	db<Thread>(TRC) << "Thread::id()\n";
 	return _id;
 }
 
 // Retornar contexto da thread
 Thread::Context* Thread::context(){
+	db<Thread>(TRC) << "Thread::context()\n";
 	return _context;
 }
 
@@ -26,6 +28,7 @@ Thread::Context* Thread::context(){
  * Valor de retorno é negativo se houve erro, ou zero.
  */ 
 int Thread::switch_context(Thread * prev, Thread * next){
+	db<Thread>(TRC) << "Thread::switch_context()\n";
 	CPU::switch_context(prev->context(), next->context());
 	_running = next;
 	return 0;
@@ -46,9 +49,7 @@ Thread::Thread(){
  * Quando a thread encerra, o controle deve retornar à main. 
  */  
 void Thread::thread_exit (int exit_code){
-	
-	CPU::switch_context(_running->context(), _father);
+	db<Thread>(TRC) << "Thread::thread_exit()\n";
 	delete _context;
-	delete _father;
 }
 __END_API

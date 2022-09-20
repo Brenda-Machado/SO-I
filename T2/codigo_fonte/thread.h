@@ -20,12 +20,8 @@ public:
      * PS: devido ao template, este método deve ser implementado neste mesmo arquivo .h
      */ 
     template<typename ... Tn>
-    Thread(void (* entry)(Tn ...), Tn ... an){
-		_context = new Context(entry, an...);
-		_id = _last_id++;
-		_father = new Context();
-		_father->save();
-	}
+    Thread(void (* entry)(Tn ...), Tn ... an);
+
     /*
      * Retorna a Thread que está em execução.
      */ 
@@ -64,20 +60,18 @@ private:
     static Thread * _running;
 
 	static int _last_id;
-	Context * _father;
 
     /*
      * Qualquer outro atributo que você achar necessário para a solução.
      */ 
 };
 
+template<typename ... Tn>
+Thread::Thread(void (* entry)(Tn ...), Tn ... an){
+	_context = new Context(entry, an...);
+	_id = ++_last_id;
+}
+
 __END_API
 
 #endif
-/*
-template<typename ... Tn>
-Thread::Thread(void (* entry)(Tn ...), Tn ... an){
-	_context = Context(entry, an...);
-	_id = ++_last_id;
-}
-*/
