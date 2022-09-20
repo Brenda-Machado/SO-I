@@ -22,21 +22,7 @@ public:
         }
 
         template <typename... Tn>
-        Context(void (*func)(Tn...), Tn... an)
-        {
-            _stack = new char[STACK_SIZE];
-            getcontext(&_context);
-            if (_stack) {
-                _context.uc_link = 0;
-                _context.uc_stack.ss_sp = _stack;
-                _context.uc_stack.ss_size = STACK_SIZE;
-                _context.uc_stack.ss_flags = 0;
-                int n = sizeof...(Tn);
-                makecontext(&_context, (void (*)())func, n, an...);
-            } else {
-                exit(1);
-            }
-        }
+        Context(void (*func)(Tn...), Tn... an);
 
         ~Context();
 
@@ -53,6 +39,23 @@ public:
 public:
     static void switch_context(Context *from, Context *to);
 };
+
+template <typename... Tn>
+inline CPU::Context::Context(void (*func)(Tn...), Tn... an)
+{
+    _stack = new char[STACK_SIZE];
+    getcontext(&_context);
+    if (_stack) {
+        _context.uc_link = 0;
+        _context.uc_stack.ss_sp = _stack;
+        _context.uc_stack.ss_size = STACK_SIZE;
+        _context.uc_stack.ss_flags = 0;
+        int n = sizeof...(Tn);
+        makecontext(&_context, (void (*)())func, n, an...);
+    } else {
+        exit(1);
+    }
+}
 
 __END_API
 
