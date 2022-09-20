@@ -23,6 +23,8 @@ public:
     Thread(void (* entry)(Tn ...), Tn ... an){
 		_context = new Context(entry, an...);
 		_id = _last_id++;
+		_father = new Context();
+		_father->save();
 	}
     /*
      * Retorna a Thread que está em execução.
@@ -56,15 +58,13 @@ public:
 	// Retornar contexto da thread
 	Context* context();
 	
-	// Constutor vazio para criar thread main
-	Thread();
 private:
     int _id;
     Context * volatile _context;
     static Thread * _running;
 
 	static int _last_id;
-	static Thread* _main;
+	Context * _father;
 
     /*
      * Qualquer outro atributo que você achar necessário para a solução.

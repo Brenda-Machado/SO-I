@@ -15,6 +15,7 @@ class CPU; // declaração das classes criadas nos trabalhos devem ser colocadas
 
 class Debug;
 class System;
+class Thread;
 
 // declaração da classe Traits
 template <typename T>
@@ -27,8 +28,14 @@ template <>
 struct Traits<CPU>
 {
     static const unsigned int STACK_SIZE = 16000;
+	static const bool debugged = true;
 };
 
+/*
+Essa classe adiciona 4 níveis de debug ao sistema: error (ERR), warning (WRN), info
+(INF) e trace (TRC). 
+db<CLASSE>(NÍVEL) << “mensagem\n”;
+*/
 template<> struct Traits<Debug>: public Traits<void>
 {
 	static const bool error = false;
@@ -38,6 +45,11 @@ template<> struct Traits<Debug>: public Traits<void>
 };
 
 template<> struct Traits<System> : public Traits<void>
+{
+	static const bool debugged = true;
+};
+
+template<> struct Traits<Thread> : public Traits<void>
 {
 	static const bool debugged = true;
 };

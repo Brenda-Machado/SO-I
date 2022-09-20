@@ -5,8 +5,7 @@ __BEGIN_API
 // Inicializando atributos estaticos
 
 int Thread::_last_id = 0;
-Thread * Thread::_main = new Thread();
-Thread * Thread::_running = _main;
+Thread * Thread::_running = nullptr;
 
 /*
  * Retorna o ID da thread.
@@ -34,10 +33,12 @@ int Thread::switch_context(Thread * prev, Thread * next){
 
 
 // Constutor vazio para criar thread main
+/*
 Thread::Thread(){
 	_context = new Context();
 	_id = _last_id++;
 }
+*/
 
 /*
  * Termina a thread.
@@ -45,6 +46,9 @@ Thread::Thread(){
  * Quando a thread encerra, o controle deve retornar à main. 
  */  
 void Thread::thread_exit (int exit_code){
-	Thread::switch_context(_running, _main);
+	
+	CPU::switch_context(_running->context(), _father);
+	delete _context;
+	delete _father;
 }
 __END_API
