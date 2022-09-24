@@ -29,8 +29,8 @@ Thread::Context* Thread::context(){
  */ 
 int Thread::switch_context(Thread * prev, Thread * next){
 	db<Thread>(TRC) << "Thread::switch_context()\n";
-	CPU::switch_context(prev->context(), next->context());
 	_running = next;
+	CPU::switch_context(prev->context(), next->context());
 	return 0;
 }
 
