@@ -45,11 +45,56 @@ Thread::Thread(){
 
 /*
  * Termina a thread.
- * exit_code é o código de término devolvido pela tarefa (ignorar agora, vai ser usado mais tarde).
+ * exit_code é o código de término devolvido pela tarefa.
  * Quando a thread encerra, o controle deve retornar à main. 
  */  
 void Thread::thread_exit (int exit_code){
 	db<Thread>(TRC) << "Thread::thread_exit()\n";
 	delete _context;
 }
+/*
+	* NOVO MÉTODO DESTE TRABALHO.
+	* Daspachante (disptacher) de threads. 
+	* Executa enquanto houverem threads do usuário.
+	* Chama o escalonador para definir a próxima tarefa a ser executada.
+	*/
+void Thread::dispatcher() {
+	db<Thread>(TRC) << "Thread::dispatcher()\n";
+	while(true){ //enquanto existir thread do usuário
+		Thread * next =_ready.head();
+		_dispatcher._state = READY;
+		_ready.insert(&_dispatcher);
+		_running = next;
+		_running->_state = RUNNING;
+		switch_context(_running, next);
+		if (next->_state == FINISHING) {
+			_ready.remove(next);
+			_dispatcher._state = FINISHING;
+			_ready.remove(&_dispatcher);
+			switch_context(&_dispatcher, &_main);
+		}
+	}
+}
+
+/*
+	* NOVO MÉTODO DESTE TRABALHO.
+	* Realiza a inicialização da class Thread.
+	* Cria as Threads main e dispatcher.
+	*/ 
+void Thread::init(void (*main)(void *)){
+	db<Thread>(TRC) << "Thread::init()\n";
+	_main._context = new Context(main);
+	_main._id = _last_id++;
+	_running = &_main;
+}
+
+
+/*
+	* Devolve o processador para a thread dispatcher que irá escolher outra thread pronta
+	* para ser executada.
+	*/
+void Thread::yield(){
+
+};
+
 __END_API
