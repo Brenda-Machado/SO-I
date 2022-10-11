@@ -68,7 +68,7 @@ void Thread::dispatcher()
 	{ // enquanto existir thread do usuário
 		Thread *next = _ready.head()->object();
 		_dispatcher._state = READY;
-		_ready.insert(&_dispatcher);
+		_ready.insert(&_dispatcher._link);
 		_running = next;
 		_running->_state = RUNNING;
 		switch_context(_running, next);
@@ -90,8 +90,10 @@ void Thread::dispatcher()
 void Thread::init(void (*main)(void *))
 {
 	db<Thread>(TRC) << "Thread::init()\n";
-	_main._context = new Context(main);
-	_main._id = _last_id++;
+	_main = Thread((void (*)())main);
+
+	// _main._context = new Context(main);
+	// _main._id = _last_id++;
 	_running = &_main;
 }
 
