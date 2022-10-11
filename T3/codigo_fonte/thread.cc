@@ -16,6 +16,13 @@ int Thread::id()
 	return _id;
 }
 
+// Retornar contexto da thread
+Thread::Context *Thread::context()
+{
+	db<Thread>(TRC) << "Thread::context()\n";
+	return _context;
+}
+
 /*
  * Método para trocar o contexto entre duas thread, a anterior (prev)
  * e a próxima (next).
@@ -85,8 +92,10 @@ void Thread::dispatcher()
 void Thread::init(void (*main)(void *))
 {
 	db<Thread>(TRC) << "Thread::init()\n";
-	_main._context = new Context(main);
-	_main._id = _last_id++;
+	_main = Thread((void (*)())main);
+
+	// _main._context = new Context(main);
+	// _main._id = _last_id++;
 	_running = &_main;
 	// Cria a thread dispatcher
 	_dispatcher._context = new Context(&dispatcher);
@@ -108,6 +117,7 @@ void Thread::yield()
 	{
 		this->_link.rank(now);
 	}
+	
 	_ready.insert(_running);
 	_running = next;
 	_running->_state = RUNNING;
