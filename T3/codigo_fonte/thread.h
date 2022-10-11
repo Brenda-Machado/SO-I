@@ -121,7 +121,7 @@ inline Thread::Thread(void (*entry)(Tn...), Tn... an) : /* inicialização de _l
     _context = new Context(entry, an...);
     _id = ++_last_id;
     // ponteiro para a thread
-    _link(, (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()))
+    _link(this, (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()))
 }
 
 __END_API
