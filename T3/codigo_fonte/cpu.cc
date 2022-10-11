@@ -15,15 +15,14 @@ void CPU::Context::load()
 }
 
 CPU::Context::~Context()
-{   
+{
     if (_stack)
         delete[] _stack;
 }
 
 int CPU::switch_context(Context *from, Context *to)
-{   
-    if (!swapcontext(&(from->_context), &(to->_context)))
-        return 0;
+{
+    return swapcontext(&(from->_context), &(to->_context));
 }
 
 __END_API
