@@ -55,7 +55,11 @@ Thread::Thread(){
 void Thread::thread_exit(int exit_code)
 {
 	db<Thread>(TRC) << "Thread::thread_exit()\n";
-	delete _context;
+	if (exit_code != 0) {
+		this->_state = FINISHING;
+		this->switch_context(this, &_main);
+		delete this->_context;
+	}
 }
 /*
  * NOVO MÉTODO DESTE TRABALHO.
@@ -94,10 +98,9 @@ void Thread::init(void (*main)(void *))
 	db<Thread>(TRC) << "Thread::init()\n";
 	_main = Thread((void (*)())main);
 
-	// _main._context = new Context(main);
-	// _main._id = _last_id++;
+	_main._context = new Context(main);
+	_main._id = _last_id++;
 	_running = &_main;
-	// Cria a thread dispatcher
 	_dispatcher._context = new Context(&dispatcher);
 }
 
