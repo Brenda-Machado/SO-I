@@ -109,16 +109,13 @@ void Thread::yield()
 {
 	db<Thread>(TRC) << "Thread::yield()\n";
 	Thread *next = _ready.head()->object();
-	// atualiza a prioridade da tarefa que estava sendo executada (aquela que chamou yield) com o
-	// timestamp atual, a fim de reinserí-la na fila de prontos atualizada
 	int now = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-	// (cuide de casos especiais, como estado ser FINISHING ou Thread main que não devem ter suas prioridades alteradas)
-	if (!next->_state == FINISHING and !next == _main)
+	if (next->_state != FINISHING and next != &_main)
 	{
-		this->_link.rank(now);
+		this->_link.rank() = now;
 	}
 	
-	_ready.insert(_running);
+	_ready.insert(&_running->_link);
 	_running = next;
 	_running->_state = RUNNING;
 	switch_context(_running, next);
