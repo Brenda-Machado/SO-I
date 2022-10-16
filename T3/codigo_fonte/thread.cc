@@ -6,6 +6,10 @@ __BEGIN_API
 
 int Thread::_last_id = 0;
 Thread *Thread::_running = nullptr;
+Thread Thread::_main;
+CPU::Context Thread::_main_context;
+Thread Thread::_dispatcher;
+Ordered_List<Thread> Thread::_ready;
 
 /*
  * Retorna o ID da thread.
@@ -33,10 +37,7 @@ int Thread::switch_context(Thread *prev, Thread *next)
 {
 	db<Thread>(TRC) << "Thread::switch_context()\n";
 	_running = next;
-	if (!CPU::switch_context(prev->context(), next->context()))
-	{
-		return 0;
-	}
+	return CPU::switch_context(prev->context(), next->context());
 }
 
 // Constutor vazio para criar thread main
@@ -55,7 +56,8 @@ Thread::Thread(){
 void Thread::thread_exit(int exit_code)
 {
 	db<Thread>(TRC) << "Thread::thread_exit()\n";
-	if (exit_code != 0) {
+	if (exit_code != 0)
+	{
 		this->_state = FINISHING;
 		this->switch_context(this, &_main);
 		delete this->_context;
@@ -73,6 +75,7 @@ void Thread::dispatcher()
 	while (true)
 	{ // enquanto existir thread do usuário
 		Thread *next = _ready.head()->object();
+		_ready.remove_head();
 		_dispatcher._state = READY;
 		_ready.insert(&_dispatcher._link);
 		_running = next;
@@ -97,11 +100,13 @@ void Thread::init(void (*main)(void *))
 {
 	db<Thread>(TRC) << "Thread::init()\n";
 	_main = Thread((void (*)())main);
+	_main_context = CPU::Context();
+	_main_context.save();
+	_dispatcher = Thread(Thread::dispatcher);
 
-	_main._context = new Context(main);
-	_main._id = _last_id++;
 	_running = &_main;
-	_dispatcher._context = new Context(&dispatcher);
+	_main._state = RUNNING;
+	CPU::switch_context(&_main_context, _main.context());
 }
 
 /*
@@ -112,16 +117,24 @@ void Thread::yield()
 {
 	db<Thread>(TRC) << "Thread::yield()\n";
 	Thread *next = _ready.head()->object();
+	_ready.remove_head();
 	int now = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 	if (next->_state != FINISHING and next != &_main)
 	{
-		this->_link.rank() = now;
+		_running->_link.rank(now);
 	}
-	
+
+	_running->_state = READY;
 	_ready.insert(&_running->_link);
 	_running = next;
 	_running->_state = RUNNING;
 	switch_context(_running, next);
 };
 
+/*
+ * Destrutor de uma thread. Realiza todo os procedimentos para manter a consistência da classe.
+ */
+Thread::~Thread()
+{
+}
 __END_API
