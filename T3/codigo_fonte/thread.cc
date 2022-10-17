@@ -56,12 +56,13 @@ Thread::Thread(){
 void Thread::thread_exit(int exit_code)
 {
 	db<Thread>(TRC) << "Thread::thread_exit()\n";
-	if (exit_code != 0)
-	{
-		this->_state = FINISHING;
-		this->switch_context(this, &_main);
-		delete this->_context;
-	}
+
+	_state = FINISHING;
+	_ready.insert(&_link);
+	_running = &_dispatcher;
+	_dispatcher._state = RUNNING;
+	_ready.remove(&_dispatcher._link);
+	switch_context(this, &_dispatcher);
 }
 /*
  * NOVO MÉTODO DESTE TRABALHO.
@@ -72,22 +73,25 @@ void Thread::thread_exit(int exit_code)
 void Thread::dispatcher()
 {
 	db<Thread>(TRC) << "Thread::dispatcher()\n";
-	while (true)
+	int last_size = _ready.size();
+	while (last_size > 0)
 	{ // enquanto existir thread do usuário
 		Thread *next = _ready.head()->object();
 		_ready.remove_head();
+		last_size = _ready.size();
+
 		_dispatcher._state = READY;
 		_ready.insert(&_dispatcher._link);
 		_running = next;
 		_running->_state = RUNNING;
-		switch_context(_running, next);
+
+		switch_context(&_dispatcher, _running);
 		if (next->_state == FINISHING)
 		{
+			// std::cout << "removendo running" << '\n';
 			_ready.remove(next);
 		}
 	}
-	_dispatcher._state = FINISHING;
-	_ready.remove(&_dispatcher);
 	switch_context(&_dispatcher, &_main);
 }
 
@@ -99,13 +103,15 @@ void Thread::dispatcher()
 void Thread::init(void (*main)(void *))
 {
 	db<Thread>(TRC) << "Thread::init()\n";
-	_main = Thread((void (*)())main);
+	new (&_main) Thread((void (*)())main);
 	_main_context = CPU::Context();
 	_main_context.save();
-	_dispatcher = Thread(Thread::dispatcher);
+	new (&_dispatcher) Thread(Thread::dispatcher);
 
 	_running = &_main;
 	_main._state = RUNNING;
+	_ready.remove(&_main._link);
+	_main._link.rank(2147483647);
 	CPU::switch_context(&_main_context, _main.context());
 }
 
@@ -116,25 +122,26 @@ void Thread::init(void (*main)(void *))
 void Thread::yield()
 {
 	db<Thread>(TRC) << "Thread::yield()\n";
-	Thread *next = _ready.head()->object();
-	_ready.remove_head();
+	_ready.remove(&_dispatcher);
+
 	int now = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-	if (next->_state != FINISHING and next != &_main)
+	if (_running->_state != FINISHING and _running != &_main)
 	{
 		_running->_link.rank(now);
 	}
 
 	_running->_state = READY;
 	_ready.insert(&_running->_link);
-	_running = next;
+	Thread *tempptr = _running;
+	_running = &_dispatcher;
 	_running->_state = RUNNING;
-	switch_context(_running, next);
+	switch_context(tempptr, _running);
 };
 
-/*
- * Destrutor de uma thread. Realiza todo os procedimentos para manter a consistência da classe.
- */
 Thread::~Thread()
 {
+	db<Thread>(TRC) << "Thread::~Thread()\n";
+	delete this->_context;
 }
+
 __END_API

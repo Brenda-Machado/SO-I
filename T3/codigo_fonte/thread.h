@@ -118,9 +118,12 @@ private:
 template <typename... Tn>
 inline Thread::Thread(void (*entry)(Tn...), Tn... an) /* inicialização de _link */
 {
+
+    db<Thread>(TRC) << "Thread::Thread()\n";
     _context = new Context(entry, an...);
     _id = ++_last_id;
     _link = Ready_Queue::Element(this, (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()));
+
     _state = READY;
     _ready.insert(&_link);
 }
