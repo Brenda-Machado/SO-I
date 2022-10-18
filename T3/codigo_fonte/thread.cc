@@ -62,6 +62,7 @@ void Thread::thread_exit(int exit_code)
 	_running = &_dispatcher;
 	_dispatcher._state = RUNNING;
 	_ready.remove(&_dispatcher._link);
+	_id--; 
 	switch_context(this, &_dispatcher);
 }
 /*
@@ -75,7 +76,7 @@ void Thread::dispatcher()
 	db<Thread>(TRC) << "Thread::dispatcher()\n";
 	int last_size = _ready.size();
 	while (last_size > 0)
-	{ // enquanto existir thread do usuário
+	{ 
 		Thread *next = _ready.head()->object();
 		_ready.remove_head();
 		last_size = _ready.size();
@@ -88,7 +89,6 @@ void Thread::dispatcher()
 		switch_context(&_dispatcher, _running);
 		if (next->_state == FINISHING)
 		{
-			// std::cout << "removendo running" << '\n';
 			_ready.remove(next);
 		}
 	}
