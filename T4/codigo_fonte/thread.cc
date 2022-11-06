@@ -10,6 +10,7 @@ Thread Thread::_main;
 CPU::Context Thread::_main_context;
 Thread Thread::_dispatcher;
 Ordered_List<Thread> Thread::_ready;
+Ordered_List<Thread> Thread::_waiting;
 
 /*
  * Retorna o ID da thread.
@@ -142,6 +143,30 @@ Thread::~Thread()
 {
 	db<Thread>(TRC) << "Thread::~Thread()\n";
 	delete this->_context;
+}
+
+int Thread::join() {
+	db<Thread>(TRC) << "Thread::join()\n";
+	if (_state == FINISHING) {
+		Thread *tempptr = _waiting.head()->object();
+		tempptr->resume();
+		return 0;
+	} 
+	_running->suspend();
+	return 0;
+}
+
+void Thread::suspend() {
+	db<Thread>(TRC) << "Thread::suspend()\n";
+	this->_state = WAITING;
+	_waiting.insert(&_link);
+}
+
+void Thread::resume() {
+	db<Thread>(TRC) << "Thread::resume()\n";
+	_waiting.remove(&_link);
+	this->_state = READY;
+	_ready.insert(&_link);
 }
 
 __END_API
