@@ -10,6 +10,7 @@ Thread Thread::_main;
 CPU::Context Thread::_main_context;
 Thread Thread::_dispatcher;
 Ordered_List<Thread> Thread::_ready;
+Ordered_List<Thread> Thread::_waiting;
 
 /*
  * Retorna o ID da thread.
@@ -74,12 +75,11 @@ void Thread::thread_exit(int exit_code)
 void Thread::dispatcher()
 {
 	db<Thread>(TRC) << "Thread::dispatcher()\n";
-	int last_size = _ready.size();
-	while (last_size > 0)
-	{ 
+	int size = _ready.size();
+	while (size > 0)
+	{
 		Thread *next = _ready.head()->object();
 		_ready.remove_head();
-		last_size = _ready.size();
 
 		_dispatcher._state = READY;
 		_ready.insert(&_dispatcher._link);
@@ -91,6 +91,7 @@ void Thread::dispatcher()
 		{
 			_ready.remove(next);
 		}
+		size = _ready.size();
 	}
 	switch_context(&_dispatcher, &_main);
 }
@@ -103,7 +104,8 @@ void Thread::dispatcher()
 void Thread::init(void (*main)(void *))
 {
 	db<Thread>(TRC) << "Thread::init()\n";
-	new (&_main) Thread((void (*)())main);
+	std::string nome = "main";
+	new (&_main) Thread((void (*)(char *))main, (char *)nome.data());
 	_main_context = CPU::Context();
 	_main_context.save();
 	new (&_dispatcher) Thread(Thread::dispatcher);
@@ -111,7 +113,6 @@ void Thread::init(void (*main)(void *))
 	_running = &_main;
 	_main._state = RUNNING;
 	_ready.remove(&_main._link);
-	_main._link.rank(2147483647);
 	CPU::switch_context(&_main_context, _main.context());
 }
 
@@ -131,7 +132,10 @@ void Thread::yield()
 	}
 
 	_running->_state = READY;
-	_ready.insert(&_running->_link);
+	if (_running != &_main)
+	{
+		_ready.insert(&_running->_link);
+	}
 	Thread *tempptr = _running;
 	_running = &_dispatcher;
 	_running->_state = RUNNING;
@@ -142,6 +146,30 @@ Thread::~Thread()
 {
 	db<Thread>(TRC) << "Thread::~Thread()\n";
 	delete this->_context;
+}
+
+int Thread::join() {
+	db<Thread>(TRC) << "Thread::join()\n";
+	if (_state == FINISHING) {
+		Thread *tempptr = _waiting.head()->object();
+		tempptr->resume();
+		return 0;
+	} 
+	_running->suspend();
+	return 0;
+}
+
+void Thread::suspend() {
+	db<Thread>(TRC) << "Thread::suspend()\n";
+	this->_state = WAITING;
+	_waiting.insert(&_link);
+}
+
+void Thread::resume() {
+	db<Thread>(TRC) << "Thread::resume()\n";
+	_waiting.remove(&_link);
+	this->_state = READY;
+	_ready.insert(&_link);
 }
 
 __END_API
