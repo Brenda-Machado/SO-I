@@ -132,6 +132,7 @@ private:
      * Qualquer outro atributo que você achar necessário para a solução.
      */
     static int _last_id;
+    int _exit_code;
 };
 
 template <typename... Tn>
