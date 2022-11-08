@@ -98,6 +98,7 @@ void Thread::dispatcher()
 
 		size = _ready.size();
 	}
+	_dispatcher._state = FINISHING;
 	switch_context(&_dispatcher, &_main);
 }
 
