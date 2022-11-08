@@ -154,7 +154,7 @@ int Thread::join() {
 	if (_state == FINISHING) {
 		Thread *tempptr = _suspended.head()->object();
 		tempptr->resume();
-		return 0;
+		return _exit_code;
 	} 
 	_running->suspend();
 	return 0;
@@ -168,7 +168,7 @@ void Thread::suspend() {
 
 void Thread::resume() {
 	db<Thread>(TRC) << "Thread::resume()\n";
-	_waiting.remove(&_link);
+	_suspended.remove(&_link);
 	this->_state = READY;
 	_ready.insert(&_link);
 }
