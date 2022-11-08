@@ -17,7 +17,7 @@ protected:
 
 public:
     typedef Ordered_List<Thread> Ready_Queue;
-    typedef Ordered_List<Thread> Waiting_Queue;
+    typedef Ordered_List<Thread> Suspended_Queue;
 
     // Thread State
     enum State
@@ -25,7 +25,7 @@ public:
         RUNNING,
         READY,
         FINISHING,
-        WAITING
+        SUSPENDED
     };
 
     /*
@@ -123,7 +123,7 @@ private:
     static CPU::Context _main_context;
     static Thread _dispatcher;
     static Ready_Queue _ready;
-    static Waiting_Queue _waiting;
+    static Suspended_Queue _suspended;
 
     Ready_Queue::Element _link;
     volatile State _state;

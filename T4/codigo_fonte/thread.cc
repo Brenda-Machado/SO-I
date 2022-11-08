@@ -10,7 +10,7 @@ Thread Thread::_main;
 CPU::Context Thread::_main_context;
 Thread Thread::_dispatcher;
 Ordered_List<Thread> Thread::_ready;
-Ordered_List<Thread> Thread::_waiting;
+Ordered_List<Thread> Thread::_suspended;
 
 /*
  * Retorna o ID da thread.
@@ -65,6 +65,7 @@ void Thread::thread_exit(int exit_code)
 	_ready.remove(&_dispatcher._link);
 	_id--; 
 	switch_context(this, &_dispatcher);
+	this->_exit_code = exit_code;
 }
 /*
  * NOVO MÉTODO DESTE TRABALHO.
@@ -151,7 +152,7 @@ Thread::~Thread()
 int Thread::join() {
 	db<Thread>(TRC) << "Thread::join()\n";
 	if (_state == FINISHING) {
-		Thread *tempptr = _waiting.head()->object();
+		Thread *tempptr = _suspended.head()->object();
 		tempptr->resume();
 		return 0;
 	} 
@@ -161,8 +162,8 @@ int Thread::join() {
 
 void Thread::suspend() {
 	db<Thread>(TRC) << "Thread::suspend()\n";
-	this->_state = WAITING;
-	_waiting.insert(&_link);
+	this->_state = SUSPENDED;
+	_suspended.insert(&_link);
 }
 
 void Thread::resume() {
