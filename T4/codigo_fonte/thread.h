@@ -96,22 +96,6 @@ public:
      */
     Context *context();
 
-    /*
-     * Suspende a thread em execução até que a thread “alvo” finalize. O inteiro
-     * retornado por join() é o argumento recebido por thread_exit(), ou seja, exit_code.
-     */
-    int join();
-
-    /*
-     * Suspende a Thread até que resume() seja chamado.
-     */
-    void suspend();
-
-    /*
-     * Coloca uma Thread que estava suspensa de volta para a fila de prontos.
-     */
-    void resume();
-
 private:
     int _id;
     Context *volatile _context;
