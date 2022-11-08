@@ -63,9 +63,12 @@ void Thread::thread_exit(int exit_code)
 	_running = &_dispatcher;
 	_dispatcher._state = RUNNING;
 	_ready.remove(&_dispatcher._link);
-	_id--;
-	switch_context(this, &_dispatcher);
+	if (this->called_join != nullptr)
+	{
+		this->called_join->resume();
+	}
 	this->_exit_code = exit_code;
+	switch_context(this, &_dispatcher);
 }
 /*
  * NOVO MÉTODO DESTE TRABALHO.
@@ -153,14 +156,24 @@ Thread::~Thread()
 int Thread::join()
 {
 	db<Thread>(TRC) << "Thread::join()\n";
-	if (_state == FINISHING)
+	// if (_state == FINISHING)
+	// {
+	// 	Thread *tempptr = _suspended.head()->object();
+	// 	tempptr->resume();
+	// 	return _exit_code;
+	// }
+	if (this->_state == FINISHING)
 	{
-		Thread *tempptr = _suspended.head()->object();
-		tempptr->resume();
 		return _exit_code;
 	}
+	this->called_join = _running;
 	_running->suspend();
-	return 0;
+	Thread *tempptr = _running;
+	this->_state = RUNNING;
+	_running = this;
+	_ready.remove(&this->_link);
+	switch_context(tempptr, this);
+	return this->_exit_code;
 }
 
 void Thread::suspend()
@@ -173,9 +186,9 @@ void Thread::suspend()
 void Thread::resume()
 {
 	db<Thread>(TRC) << "Thread::resume()\n";
-	_suspended.remove(&_link);
+	_suspended.remove(&this->_link);
 	this->_state = READY;
-	_ready.insert(&_link);
+	_ready.insert(&this->_link);
 }
 
 __END_API
