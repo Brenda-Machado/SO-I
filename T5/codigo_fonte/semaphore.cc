@@ -54,5 +54,39 @@ void Semaphore::v()
     }
 }
 
+// THREAD OPERATIONS
+
+/*
+    * Método para bloquear a thread que o chamou.
+    * A thread deve ser colocada na fila de threads bloqueadas.
+    * Deve ser chamado pelo método p() do semáforo.
+    */
+void Semaphore::sleep() {
+    Thread::running()->state(Thread::WAITING);
+    _blocked->insert(Thread::running());
+    Thread::yield();
+}
+
+/*
+    * Método para desbloquear uma thread.
+    * A thread deve ser removida da fila de threads bloqueadas.
+    * Deve ser chamado pelo método v() do semáforo.
+    */
+void Semaphore::wakeup() {
+    Thread *t = _blocked->remove()->object();
+    t->state(Thread::READY);
+    Thread::ready()->insert(t);
+}
+
+/* 
+    * Método para desbloquear todas as threads.
+    */
+void Semaphore::wakeup_all() {
+    while (!_blocked->empty()) {
+        Thread *t = _blocked->remove()->object();
+        t->state(Thread::READY);
+        Thread::ready()->insert(t);
+    }
+}
 
 __END_API
