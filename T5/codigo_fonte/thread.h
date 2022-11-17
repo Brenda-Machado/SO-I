@@ -18,6 +18,7 @@ protected:
 public:
     typedef Ordered_List<Thread> Ready_Queue;
     typedef Ordered_List<Thread> Suspended_Queue;
+    typedef Ordered_List<Thread> Waiting_Queue;
 
     // Thread State
     enum State
@@ -25,7 +26,8 @@ public:
         RUNNING,
         READY,
         FINISHING,
-        SUSPENDED
+        SUSPENDED,
+        WAITING
     };
 
     /*
@@ -98,19 +100,16 @@ public:
      */
     Context *context();
 
-    // Este método deve suspender a thread em execução até que a thread “alvo” finalize. O inteiro
-    // retornado por join() é o argumento recebido por thread_exit(), ou seja, exit_code (novo atributo
-    // _exit_code  necessário  na  classe  Thread  –  pergunta:  quando  o  atributo  _exit_code  deve  ser
-    // inicializado?). Como tratar a suspensão e o resumo de uma Thread?
+    // Este método suspende a thread em execução até que a thread “alvo” finalize. 
     int join();
 
-    // Suspende a Thread até que resume() seja chamado. Como tratar as Threads suspensas dentro do
-    // SO? Deve-se usar uma nova fila? Deve -se fazer alguma alteração no estado (enum State) da
-    // Thread
+    // Suspende a Thread até que resume() seja chamado.
     void suspend();
 
-    // Coloca uma Thread que estava suspensa de volta para a fila de prontos
+    // Coloca uma Thread que estava suspensa de volta para a fila de prontos.
     void resume();
+
+    // 
 
 private:
     int _id;
@@ -122,6 +121,7 @@ private:
     static Thread _dispatcher;
     static Ready_Queue _ready;
     static Suspended_Queue _suspended;
+    static Waiting_Queue _waiting;
 
     Ready_Queue::Element _link;
     volatile State _state;
