@@ -11,6 +11,7 @@ CPU::Context Thread::_main_context;
 Thread Thread::_dispatcher;
 Ordered_List<Thread> Thread::_ready;
 Ordered_List<Thread> Thread::_suspended;
+Ordered_List<Thread> Thread::_waiting;
 
 /*
  * Retorna o ID da thread.
