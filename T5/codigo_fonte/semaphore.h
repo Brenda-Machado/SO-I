@@ -5,6 +5,7 @@
 #include "thread.h"
 #include "traits.h"
 #include "debug.h"
+#include "list.h"
 
 __BEGIN_API
 
@@ -28,7 +29,9 @@ private:
 
 private:
     //DECLARAÇÃO DOS ATRIBUTOS DO SEMÁFORO
+    int _value;
 };
+
 
 __END_API
 

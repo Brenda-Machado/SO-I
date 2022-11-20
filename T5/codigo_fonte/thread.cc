@@ -181,4 +181,20 @@ void Thread::resume()
 	_ready.insert(&this->_link);
 }
 
+void Thread::sleep_running()
+{
+	db<Thread>(TRC) << "Thread::sleep()\n";
+	_running->_state = WAITING;
+	_waiting.insert(&_running->_link);
+	yield();
+}
+
+void Thread::wakeup_waiting()
+{
+	db<Thread>(TRC) << "Thread::wakeup()\n";
+	Thread *tempptr = _waiting.head()->object();
+	_waiting.remove();
+	tempptr->_state = READY;
+	_ready.insert(&tempptr->_link);
+}
 __END_API
