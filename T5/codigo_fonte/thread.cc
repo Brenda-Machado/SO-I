@@ -42,14 +42,6 @@ int Thread::switch_context(Thread *prev, Thread *next)
 	return CPU::switch_context(prev->context(), next->context());
 }
 
-// Constutor vazio para criar thread main
-/*
-Thread::Thread(){
-	_context = new Context();
-	_id = _last_id++;
-}
-*/
-
 /*
  * Termina a thread.
  * exit_code é o código de término devolvido pela tarefa.
@@ -69,7 +61,7 @@ void Thread::thread_exit(int exit_code)
 		this->called_join->resume();
 	}
 	this->_exit_code = exit_code;
-	switch_context(this, &_dispatcher);
+	yield();
 }
 /*
  * NOVO MÉTODO DESTE TRABALHO.
@@ -158,12 +150,6 @@ Thread::~Thread()
 int Thread::join()
 {
 	db<Thread>(TRC) << "Thread::join()\n";
-	// if (_state == FINISHING)
-	// {
-	// 	Thread *tempptr = _suspended.head()->object();
-	// 	tempptr->resume();
-	// 	return _exit_code;
-	// }
 	if (this->_state == FINISHING)
 	{
 		return _exit_code;
@@ -174,15 +160,17 @@ int Thread::join()
 	this->_state = RUNNING;
 	_running = this;
 	_ready.remove(&this->_link);
-	switch_context(tempptr, this);
+	yield();
 	return this->_exit_code;
 }
 
 void Thread::suspend()
 {
 	db<Thread>(TRC) << "Thread::suspend()\n";
+	_ready.remove(&_link);
 	this->_state = SUSPENDED;
 	_suspended.insert(&_link);
+	yield();
 }
 
 void Thread::resume()
