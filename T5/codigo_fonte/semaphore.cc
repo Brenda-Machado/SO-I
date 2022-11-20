@@ -1,9 +1,7 @@
 #include "semaphore.h"
-#include "thread.h"
 
 __BEGIN_API
 
-Ordered_List<Semaphore> Semaphore::_waiting;
 
 /*
     * Construtor do semáforo.
@@ -18,7 +16,8 @@ Semaphore::Semaphore(int v) {
     * Deve liberar a memória alocada para a fila de threads bloqueadas.
     */
 Semaphore::~Semaphore() {  
-    delete Thread::_waiting;
+    Thread *temp;
+    temp->delete_waiting();
 }
 
 /*
@@ -51,7 +50,8 @@ void Semaphore::v()
     * A thread deve ser colocada na fila de threads bloqueadas.
     */
 void Semaphore::sleep() {
-    Thread::sleep_running();
+    Thread *temp;
+    temp->sleep_running();
 }
 
 /*
@@ -59,15 +59,17 @@ void Semaphore::sleep() {
     * A thread deve ser removida da fila de threads bloqueadas.
     */
 void Semaphore::wakeup() {
-    Thread::wakeup_waiting();
+    Thread *temp;
+    temp->wakeup_waiting();
 }
 
 /* 
     * Método para desbloquear todas as threads.
     */
 void Semaphore::wakeup_all() {
-    while (!Thread::_waiting.empty()) {
-       wakeup();
+    Thread *temp;
+    while (!temp->waiting_empty()) {
+        wakeup();
     }
 }
 

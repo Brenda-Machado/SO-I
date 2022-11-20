@@ -197,4 +197,16 @@ void Thread::wakeup_waiting()
 	tempptr->_state = READY;
 	_ready.insert(&tempptr->_link);
 }
+
+void Thread::delete_waiting()
+{
+	db<Thread>(TRC) << "Thread::delete()\n";
+	delete &_waiting;
+}
+
+int Thread::waiting_empty()
+{
+	db<Thread>(TRC) << "Thread::waiting_empty()\n";
+	return _waiting.empty();
+}
 __END_API

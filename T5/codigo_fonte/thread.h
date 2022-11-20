@@ -109,9 +109,11 @@ public:
     // Coloca uma Thread que estava suspensa de volta para a fila de prontos.
     void resume();
 
-    // Metodos para colocar ou tirar uma Thread na fila de espera.
+    // Metodos relacionados a fila de threads bloqueadas.
     void sleep_running();
     void wakeup_waiting();
+    void delete_waiting();
+    int waiting_empty();
 
 private:
     int _id;
