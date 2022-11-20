@@ -30,9 +30,7 @@ Semaphore::~Semaphore() {
 void Semaphore::p()
 {
     if (fdec(_value) <= 0) {
-        Thread::running()->state(Thread::WAITING);
-        _blocked->insert(Thread::running());
-        Thread::yield();
+        sleep()
     } else {
         _value--;
     }
@@ -40,16 +38,13 @@ void Semaphore::p()
 
 /*
     * Método para incrementar o valor do semáforo.
-    * Se o valor do semáforo for menor que zero, uma thread deve ser desbloqueada.
+    * Se o valor do semáforo for maior que zero, uma thread deve ser desbloqueada.
     * Caso contrário, o valor do semáforo deve ser incrementado.
     */
 void Semaphore::v()
 {
-    if (finc(_value) < 0) {
-        Thread *t = _blocked->remove()->object();
-        t->state(Thread::READY);
-        Thread::ready()->insert(t);
-    } else {
+    if (finc(_value) > 0) {
+        wakeup();
         _value++;
     }
 }
