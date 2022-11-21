@@ -25,7 +25,8 @@ public:
         RUNNING,
         READY,
         FINISHING,
-        SUSPENDED
+        SUSPENDED,
+        WAITING
     };
 
     /*

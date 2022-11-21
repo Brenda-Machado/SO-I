@@ -18,7 +18,6 @@ protected:
 public:
     typedef Ordered_List<Thread> Ready_Queue;
     typedef Ordered_List<Thread> Suspended_Queue;
-    typedef Ordered_List<Thread> Waiting_Queue;
 
     // Thread State
     enum State
@@ -100,7 +99,7 @@ public:
      */
     Context *context();
 
-    // Este método suspende a thread em execução até que a thread “alvo” finalize. 
+    // Este método suspende a thread em execução até que a thread “alvo” finalize.
     int join();
 
     // Suspende a Thread até que resume() seja chamado.
@@ -109,7 +108,13 @@ public:
     // Coloca uma Thread que estava suspensa de volta para a fila de prontos.
     void resume();
 
-    // 
+    // setter para state
+    void set_state(State);
+
+    // getter para state
+    State get_state();
+
+    static void wakeup(Thread *to_awake);
 
 private:
     int _id;
@@ -121,7 +126,6 @@ private:
     static Thread _dispatcher;
     static Ready_Queue _ready;
     static Suspended_Queue _suspended;
-    static Waiting_Queue _waiting;
 
     Ready_Queue::Element _link;
     volatile State _state;
@@ -141,6 +145,7 @@ inline Thread::Thread(void (*entry)(Tn...), Tn... an) /* inicialização de _lin
     db<Thread>(TRC) << "Thread::Thread()\n";
     _context = new Context(entry, an...);
     _id = ++_last_id;
+
     _link = Ready_Queue::Element(this, (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()));
 
     _state = READY;

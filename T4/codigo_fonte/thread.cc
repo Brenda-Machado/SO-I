@@ -41,6 +41,14 @@ int Thread::switch_context(Thread *prev, Thread *next)
 	return CPU::switch_context(prev->context(), next->context());
 }
 
+// Constutor vazio para criar thread main
+/*
+Thread::Thread(){
+	_context = new Context();
+	_id = _last_id++;
+}
+*/
+
 /*
  * Termina a thread.
  * exit_code é o código de término devolvido pela tarefa.
@@ -60,7 +68,7 @@ void Thread::thread_exit(int exit_code)
 		this->called_join->resume();
 	}
 	this->_exit_code = exit_code;
-	yield();
+	switch_context(this, &_dispatcher);
 }
 /*
  * NOVO MÉTODO DESTE TRABALHO.
@@ -91,7 +99,7 @@ void Thread::dispatcher()
 		size = _ready.size();
 	}
 	_dispatcher._state = FINISHING;
-	yield();
+	switch_context(&_dispatcher, &_main);
 }
 
 /*
@@ -129,8 +137,12 @@ void Thread::yield()
 		_running->_link.rank(now);
 	}
 
-	_running->_state = READY;
-	if (_running != &_main)
+	if (_running->_state == RUNNING)
+	{
+		_running->_state = READY;
+	}
+
+	if (_running->_state != SUSPENDED && _running->_state != WAITING)
 	{
 		_ready.insert(&_running->_link);
 	}
@@ -155,21 +167,21 @@ int Thread::join()
 	}
 	this->called_join = _running;
 	_running->suspend();
-	Thread *tempptr = _running;
-	this->_state = RUNNING;
-	_running = this;
-	_ready.remove(&this->_link);
 	yield();
+	// Thread *tempptr = _running;
+	// this->_state = RUNNING;
+	// _running = this;
+	// _ready.remove(&this->_link);
+	// switch_context(tempptr, this);
 	return this->_exit_code;
 }
 
 void Thread::suspend()
 {
 	db<Thread>(TRC) << "Thread::suspend()\n";
-	_ready.remove(&_link);
 	this->_state = SUSPENDED;
 	_suspended.insert(&_link);
-	yield();
+	_ready.remove(&_link);
 }
 
 void Thread::resume()
@@ -179,5 +191,18 @@ void Thread::resume()
 	this->_state = READY;
 	_ready.insert(&this->_link);
 }
-
+// void Thread::set_state(Thread::State state)
+// {
+// 	_state = state;
+// }
+// Thread::State Thread::get_state()
+// {
+// 	return _state;
+// }
+// void Thread::wakeup(Thread *to_awake)
+// {
+// 	to_awake->_state = READY;
+// 	_ready.insert(&to_awake->_link);
+// 	yield();
+// }
 __END_API

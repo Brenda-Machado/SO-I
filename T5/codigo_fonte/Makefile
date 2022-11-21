@@ -1,6 +1,6 @@
 
-main: cpu.o main.o main_class.o debug.o thread.o system.o
-	g++ main.o cpu.o main_class.o debug.o thread.o system.o -o main
+main: cpu.o main.o main_class.o debug.o thread.o system.o semaphore.o
+	g++ main.o cpu.o main_class.o debug.o thread.o system.o semaphore.o -o main
 
 main.o: main.cc
 	g++ -c main.cc
@@ -20,6 +20,8 @@ thread.o: thread.cc thread.h
 system.o: system.cc system.h
 	g++ -c system.cc
 	
+semaphore.o: semaphore.cc semaphore.h
+	g++ -c semaphore.cc 
 clean:
 	rm *.o main
 
