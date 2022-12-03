@@ -10,7 +10,6 @@
 #include <iostream>
 
 #include "Timer.h"
-__BEGIN_API
 Engine::Engine(int w, int h, int fps) : _displayWidth(w), _displayHeight(h),
                                         _fps(fps),
                                         _timer(NULL),
@@ -30,8 +29,9 @@ Engine::~Engine()
       al_destroy_display(_display);
 
    bg.reset();
-   spaceShip.reset();
+   _ship->sprite.reset();
    delete _event_handler;
+   delete _ship;
 }
 
 // initialize Allegro, the _display window, the addons, the timers, and event
@@ -79,6 +79,7 @@ void Engine::init()
 
    _event_handler = new EventHandler(_eventQueue);
    _event_thread = new Thread(EventHandler::start, _event_handler);
+   _ship_thread = new Thread(Ship::start, _ship);
 }
 
 // repeatedly call the state manager function until the _state is EXIT
@@ -91,8 +92,11 @@ void Engine::run()
       gameLoop(prevTime);
    }
    _event_handler->end();
+   _ship->end();
    _event_thread->thread_exit(1);
+   _ship_thread->thread_exit(2);
    delete _event_thread;
+   delete _ship_thread;
 }
 
 void Engine::gameLoop(float &prevTime)
@@ -105,7 +109,11 @@ void Engine::gameLoop(float &prevTime)
    // input
    // al_get_keyboard_state(&kb);
    // input(kb); // irá retornar uma tecla de ação. TODO: necessário transformar em Thread e fazer a ação
-   moveShip();
+   // moveShip();
+   if (_event_handler->get_crt_event() == act::action::QUIT_GAME)
+   {
+      std::cout << "sair\n";
+   }
 
    // get event
    al_wait_for_event(_eventQueue, &event);
@@ -140,10 +148,10 @@ void Engine::gameLoop(float &prevTime)
 void Engine::update(double dt)
 {
    // Spaceship
-   centre = centre + speed * dt;
-   selectShipAnimation(); // must happen before we reset our speed
-   speed = Vector(0, 0);  // reset our speed
-   checkBoundary();
+   // centre = centre + speed * dt;
+   // selectShipAnimation(); // must happen before we reset our speed
+   // speed = Vector(0, 0);  // reset our speed
+   // checkBoundary();
 
    // background
    bgMid = bgMid + bgSpeed * dt;
@@ -157,93 +165,92 @@ void Engine::update(double dt)
 void Engine::draw()
 {
    drawBackground();
-   drawShip(spaceShip, 0);
+   drawShip(_ship->sprite, 0);
 }
 
-void Engine::checkBoundary()
-{
-   // check x bound and adjust if out
-   if (centre.x > 800 - 16)
-      centre.x = 800 - 16;
-   else if (centre.x < 16)
-      centre.x = 16;
-   // check y bound and adjust if out
-   if (centre.y > 600 - 16)
-      centre.y = 600 - 16;
-   else if (centre.y < 16)
-      centre.y = 16;
-}
+// void Engine::checkBoundary()
+// {
+//    // // check x bound and adjust if out
+//    // if (centre.x > 800 - 16)
+//    //    centre.x = 800 - 16;
+//    // else if (centre.x < 16)
+//    //    centre.x = 16;
+//    // // check y bound and adjust if out
+//    // if (centre.y > 600 - 16)
+//    //    centre.y = 600 - 16;
+//    // else if (centre.y < 16)
+//    //    centre.y = 16;
+// }
 
-void Engine::moveShip()
-{
-   if (_event_handler->get_crt_event() == act::action::MOVE_UP)
-   {
-      speed.y -= 250;
-   }
-   if (_event_handler->get_crt_event() == act::action::MOVE_RIGHT)
-   {
-      speed.x += 250;
-   }
-   if (_event_handler->get_crt_event() == act::action::MOVE_DOWN)
-   {
-      speed.y += 250;
-   }
-   if (_event_handler->get_crt_event() == act::action::MOVE_LEFT)
-   {
-      speed.x -= 250;
-   }
-   if (_event_handler->get_crt_event() == act::action::FIRE_SECONDARY)
-   {
-      std::cout << "missel\n";
-   }
-   if (_event_handler->get_crt_event() == act::action::FIRE_PRIMARY)
-   {
-      std::cout << "tiro normal\n";
-   }
-   if (_event_handler->get_crt_event() == act::action::QUIT_GAME)
-   {
-      std::cout << "sair\n";
-   }
-}
+// void Engine::moveShip()
+// {
+//    // if (_event_handler->get_crt_event() == act::action::MOVE_UP)
+//    // {
+//    //    speed.y -= 250;
+//    // }
+//    // if (_event_handler->get_crt_event() == act::action::MOVE_RIGHT)
+//    // {
+//    //    speed.x += 250;
+//    // }
+//    // if (_event_handler->get_crt_event() == act::action::MOVE_DOWN)
+//    // {
+//    //    speed.y += 250;
+//    // }
+//    // if (_event_handler->get_crt_event() == act::action::MOVE_LEFT)
+//    // {
+//    //    speed.x -= 250;
+//    // }
+//    // if (_event_handler->get_crt_event() == act::action::FIRE_SECONDARY)
+//    // {
+//    //    std::cout << "missel\n";
+//    // }
+//    // if (_event_handler->get_crt_event() == act::action::FIRE_PRIMARY)
+//    // {
+//    //    std::cout << "tiro normal\n";
+//    // }
+//    // if (_event_handler->get_crt_event() == act::action::QUIT_GAME)
+//    // {
+//    //    std::cout << "sair\n";
+//    // }
+// }
 
 void Engine::drawShip(std::shared_ptr<Sprite> sprite, int flags)
 {
-   sprite->draw_region(row, col, 47.0, 40.0, centre, flags);
+   sprite->draw_region(_ship->get_row(), _ship->get_col(), 47.0, 40.0, _ship->get_centre(), flags);
 }
 void Engine::drawBackground()
 {
    bg->draw_parallax_background(bgMid.x, 0);
 }
 
-void Engine::selectShipAnimation()
-{
-   if (speed.x > 0)
-   {
-      col = 1;
-      if (speed.y > 0)
-         row = 2;
-      else if (speed.y < 0)
-         row = 0;
-      else
-         row = 1;
-   }
-   else
-   {
-      col = 0;
-      if (speed.y > 0)
-         row = 2;
-      else if (speed.y < 0)
-         row = 0;
-      else
-         row = 1;
-   }
-}
+// void Engine::selectShipAnimation()
+// {
+//    if (speed.x > 0)
+//    {
+//       col = 1;
+//       if (speed.y > 0)
+//          row = 2;
+//       else if (speed.y < 0)
+//          row = 0;
+//       else
+//          row = 1;
+//    }
+//    else
+//    {
+//       col = 0;
+//       if (speed.y > 0)
+//          row = 2;
+//       else if (speed.y < 0)
+//          row = 0;
+//       else
+//          row = 1;
+//    }
+// }
 
 void Engine::loadSprites()
 {
    // Create Ship
-   centre = Point(215, 245);
-   color = al_map_rgb(0, 200, 0);
+   _ship = new Ship(Point(215, 245), al_map_rgb(0, 200, 0), _event_handler);
 
    // represents the middle of the image width-wise, and top height-wise
    bgMid = Point(0, 0);
@@ -257,9 +264,8 @@ void Engine::loadSprites()
    al_append_path_component(path, "resources");
    al_change_directory(al_path_cstr(path, '/'));
    // sprites
-   spaceShip = std::make_shared<Sprite>("Sprite2.png"); // espaçonave do usuário
-   bg = std::make_shared<Sprite>("BGstars.png");        // fundo da tela - background
+   _ship->sprite = std::make_shared<Sprite>("Sprite2.png"); // espaçonave do usuário
+   bg = std::make_shared<Sprite>("BGstars.png");            // fundo da tela - background
    // delete path
    al_destroy_path(path);
 }
-__END_API

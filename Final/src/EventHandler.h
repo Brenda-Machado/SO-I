@@ -16,7 +16,7 @@
 #include "Vector.h"
 #include "Action.h"
 #include "thread.h"
-__BEGIN_API
+__USING_API
 class EventHandler
 {
 public:
@@ -47,4 +47,3 @@ private:
 };
 
 #endif
-__END_API

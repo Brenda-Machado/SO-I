@@ -10,7 +10,6 @@
 #include <iostream>
 
 #include "Timer.h"
-__BEGIN_API
 void EventHandler::start(EventHandler *event_handler)
 {
     event_handler->init();
@@ -87,4 +86,3 @@ act::action EventHandler::input(ALLEGRO_KEYBOARD_STATE &kb)
 
     return act::action::NO_ACTION;
 }
-__END_API

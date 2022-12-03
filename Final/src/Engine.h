@@ -18,7 +18,8 @@
 
 #include "EventHandler.h"
 #include "thread.h"
-__BEGIN_API
+#include "Ship.h"
+__USING_API
 // forward declarations
 class Menu;
 class Root;
@@ -37,7 +38,7 @@ public:
 
    void gameLoop(float &prevTime);
 
-   void moveShip();
+   // void moveShip();
    void drawShip(std::shared_ptr<Sprite> sprite, int flags);
    void drawBackground();
 
@@ -56,14 +57,14 @@ public:
 private:
    void loadSprites();
    // Checks data of the spaceship
-   void checkBoundary();
-   void selectShipAnimation();
-   std::shared_ptr<Sprite> spaceShip;
-   Point centre;        /**< ship position */
-   ALLEGRO_COLOR color; /**< ship color */
-   Vector speed;        /**< movement speed in any direction */
-   int row;             /**<row of animation to be played */
-   int col;             /**< column of animation to be played */
+   // void checkBoundary();
+   // void selectShipAnimation();
+   // std::shared_ptr<Sprite> spaceShip;
+   // Point centre;        /**< ship position */
+   // ALLEGRO_COLOR color; /**< ship color */
+   // Vector speed;        /**< movement speed in any direction */
+   // int row;             /**<row of animation to be played */
+   // int col;             /**< column of animation to be played */
 
    // Background
    Point bgMid; /**<point used by the background to draw from */
@@ -88,7 +89,9 @@ private:
    // Thread variables
    EventHandler *_event_handler;
    Thread *_event_thread;
+
+   Ship *_ship;
+   Thread *_ship_thread;
 };
 
 #endif
-__END_API
