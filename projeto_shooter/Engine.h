@@ -16,56 +16,64 @@
 #include "Vector.h"
 #include "Action.h"
 
+#include "EventHandler.h"
+#include "thread.h"
+__BEGIN_API
 // forward declarations
 class Menu;
 class Root;
 
-class Engine {
-      
-  public:
+class Engine
+{
+
+public:
    Engine(int w, int h, int fps);
    ~Engine();
-   
+
    void init();
    void run();
    void draw();
    void update(double dt);
 
-   void gameLoop(float& prevTime);
+   void gameLoop();
 
-   act::action input(ALLEGRO_KEYBOARD_STATE&);
+   void moveShip();
    void drawShip(std::shared_ptr<Sprite> sprite, int flags);
    void drawBackground();
 
-   inline int getWidth() const {
+   static void start(Engine *engine);
+
+   inline int getWidth() const
+   {
       return _displayWidth;
    }
-   inline int getHeight() const {
+   inline int getHeight() const
+   {
       return _displayHeight;
    }
-   inline int getFps() const {
-      return _fps;
-   }
+   // inline int getFps() const {
+   //    return _fps;
+   // }
 
-  private:
+private:
    void loadSprites();
-   //Checks data of the spaceship
+   // Checks data of the spaceship
    void checkBoundary();
    void selectShipAnimation();
    std::shared_ptr<Sprite> spaceShip;
    Point centre;        /**< ship position */
-   ALLEGRO_COLOR color; /**< ship color */   
+   ALLEGRO_COLOR color; /**< ship color */
    Vector speed;        /**< movement speed in any direction */
    int row;             /**<row of animation to be played */
    int col;             /**< column of animation to be played */
 
-   //Background
-   Point bgMid;/**<point used by the background to draw from */
+   // Background
+   Point bgMid; /**<point used by the background to draw from */
    Point fgMid;
    Point fg2Mid;
-   Vector bgSpeed;/**<background movement speed */
+   Vector bgSpeed; /**<background movement speed */
    Vector fgSpeed;
-   std::shared_ptr<Sprite> bg;/**<shared pointer to background animation */
+   std::shared_ptr<Sprite> bg; /**<shared pointer to background animation */
    std::shared_ptr<Sprite> fg;
 
    // general game variables
@@ -78,11 +86,13 @@ class Engine {
    ALLEGRO_DISPLAY *_display;
 
    bool _finish;
-   
+
+   // Thread variables
+   EventHandler *_event_handler;
+   Thread *_event_thread;
+
+   float _prev_time;
 };
 
-
-
-
-
 #endif
+__END_API
