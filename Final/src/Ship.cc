@@ -14,17 +14,19 @@ Ship::Ship(Point centre, ALLEGRO_COLOR color, EventHandler *event_handler)
     _centre = centre;
     _color = color;
     _event_handler = event_handler;
+    _finish = false;
 }
 void Ship::start(Ship *ship)
 {
     std::cout << "ship start" << std::endl;
     ship->run();
+    std::cout << "ending ship" << std::endl;
+    Thread::exit_running(3);
 }
 void Ship::run()
 {
     std::cout << "ship run" << std::endl;
     _prev_time = 0;
-    std::cout << "setted prev_time" << std::endl;
     while (!_finish)
     {
         shipLoop();
@@ -32,11 +34,8 @@ void Ship::run()
 }
 void Ship::shipLoop()
 {
-    std::cout << "ship loop" << std::endl;
-
     setSpeed();
     float crt_time = al_current_time();
-    std::cout << crt_time << std::endl;
     float dt = crt_time - _prev_time;
     _centre = _centre + _speed * dt;
     selectShipAnimation();

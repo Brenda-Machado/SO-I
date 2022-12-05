@@ -53,7 +53,6 @@ act::action EventHandler::input(ALLEGRO_KEYBOARD_STATE &kb)
 {
     if (al_key_down(&kb, ALLEGRO_KEY_UP))
     {
-
         return act::action::MOVE_UP;
     }
     if (al_key_down(&kb, ALLEGRO_KEY_RIGHT))

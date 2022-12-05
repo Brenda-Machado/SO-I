@@ -1,4 +1,4 @@
-#include "Engine.h"
+#include "Window.h"
 
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
@@ -10,16 +10,25 @@
 #include <iostream>
 
 #include "Timer.h"
-Engine::Engine(int w, int h, int fps) : _displayWidth(w), _displayHeight(h),
-                                        _fps(fps),
-                                        _timer(NULL),
-                                        _eventQueue(NULL),
-                                        _event_handler(NULL),
-                                        _finish(false)
+void Window::start(Window *window)
 {
+   window->run();
+   std::cout << "exiting engine" << std::endl;
+   Thread::exit_running(10);
+}
+Window::Window(int w, int h, int fps)
+{
+   _displayWidth = w;
+   _displayHeight = h;
+   _fps = fps;
+   _finish = false;
+   _timer = NULL;
+   _eventQueue = NULL;
+   _event_handler = NULL;
+   init();
 }
 
-Engine::~Engine()
+Window::~Window()
 {
    if (_timer != NULL)
       al_destroy_timer(_timer);
@@ -36,7 +45,7 @@ Engine::~Engine()
 
 // initialize Allegro, the _display window, the addons, the timers, and event
 // sources
-void Engine::init()
+void Window::init()
 {
    // initialize allegro
    al_init();
@@ -75,15 +84,17 @@ void Engine::init()
    // register keyboard
    al_register_event_source(_eventQueue, al_get_keyboard_event_source());
 
+   _event_handler = new EventHandler(_eventQueue);
+
+   // inicia _ship
    loadSprites();
 
-   _event_handler = new EventHandler(_eventQueue);
    _event_thread = new Thread(EventHandler::start, _event_handler);
    _ship_thread = new Thread(Ship::start, _ship);
 }
 
 // repeatedly call the state manager function until the _state is EXIT
-void Engine::run()
+void Window::run()
 {
    float prevTime = 0;
    // main engine loop
@@ -91,25 +102,22 @@ void Engine::run()
    {
       gameLoop(prevTime);
    }
-   _event_handler->end();
+
    _ship->end();
-   _event_thread->thread_exit(1);
-   _ship_thread->thread_exit(2);
-   delete _event_thread;
+   _ship_thread->join();
    delete _ship_thread;
+
+   _event_handler->end();
+   _event_thread->join();
+   delete _event_thread;
 }
 
-void Engine::gameLoop(float &prevTime)
+void Window::gameLoop(float &prevTime)
 {
    ALLEGRO_EVENT event;
-   // ALLEGRO_KEYBOARD_STATE kb;
    bool redraw = true;
    float crtTime;
 
-   // input
-   // al_get_keyboard_state(&kb);
-   // input(kb); // irá retornar uma tecla de ação. TODO: necessário transformar em Thread e fazer a ação
-   // moveShip();
    if (_event_handler->get_crt_event() == act::action::QUIT_GAME)
    {
       std::cout << "sair\n";
@@ -145,14 +153,8 @@ void Engine::gameLoop(float &prevTime)
 }
 
 // update the game mode
-void Engine::update(double dt)
+void Window::update(double dt)
 {
-   // Spaceship
-   // centre = centre + speed * dt;
-   // selectShipAnimation(); // must happen before we reset our speed
-   // speed = Vector(0, 0);  // reset our speed
-   // checkBoundary();
-
    // background
    bgMid = bgMid + bgSpeed * dt;
    if (bgMid.x >= 800)
@@ -162,92 +164,22 @@ void Engine::update(double dt)
 }
 
 // draws for the game mode
-void Engine::draw()
+void Window::draw()
 {
    drawBackground();
    drawShip(_ship->sprite, 0);
 }
 
-// void Engine::checkBoundary()
-// {
-//    // // check x bound and adjust if out
-//    // if (centre.x > 800 - 16)
-//    //    centre.x = 800 - 16;
-//    // else if (centre.x < 16)
-//    //    centre.x = 16;
-//    // // check y bound and adjust if out
-//    // if (centre.y > 600 - 16)
-//    //    centre.y = 600 - 16;
-//    // else if (centre.y < 16)
-//    //    centre.y = 16;
-// }
-
-// void Engine::moveShip()
-// {
-//    // if (_event_handler->get_crt_event() == act::action::MOVE_UP)
-//    // {
-//    //    speed.y -= 250;
-//    // }
-//    // if (_event_handler->get_crt_event() == act::action::MOVE_RIGHT)
-//    // {
-//    //    speed.x += 250;
-//    // }
-//    // if (_event_handler->get_crt_event() == act::action::MOVE_DOWN)
-//    // {
-//    //    speed.y += 250;
-//    // }
-//    // if (_event_handler->get_crt_event() == act::action::MOVE_LEFT)
-//    // {
-//    //    speed.x -= 250;
-//    // }
-//    // if (_event_handler->get_crt_event() == act::action::FIRE_SECONDARY)
-//    // {
-//    //    std::cout << "missel\n";
-//    // }
-//    // if (_event_handler->get_crt_event() == act::action::FIRE_PRIMARY)
-//    // {
-//    //    std::cout << "tiro normal\n";
-//    // }
-//    // if (_event_handler->get_crt_event() == act::action::QUIT_GAME)
-//    // {
-//    //    std::cout << "sair\n";
-//    // }
-// }
-
-void Engine::drawShip(std::shared_ptr<Sprite> sprite, int flags)
+void Window::drawShip(std::shared_ptr<Sprite> sprite, int flags)
 {
    sprite->draw_region(_ship->get_row(), _ship->get_col(), 47.0, 40.0, _ship->get_centre(), flags);
 }
-void Engine::drawBackground()
+void Window::drawBackground()
 {
    bg->draw_parallax_background(bgMid.x, 0);
 }
 
-// void Engine::selectShipAnimation()
-// {
-//    if (speed.x > 0)
-//    {
-//       col = 1;
-//       if (speed.y > 0)
-//          row = 2;
-//       else if (speed.y < 0)
-//          row = 0;
-//       else
-//          row = 1;
-//    }
-//    else
-//    {
-//       col = 0;
-//       if (speed.y > 0)
-//          row = 2;
-//       else if (speed.y < 0)
-//          row = 0;
-//       else
-//          row = 1;
-//    }
-// }
-
-void Engine::loadSprites()
+void Window::loadSprites()
 {
    // Create Ship
    _ship = new Ship(Point(215, 245), al_map_rgb(0, 200, 0), _event_handler);

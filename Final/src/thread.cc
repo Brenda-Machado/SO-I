@@ -21,6 +21,11 @@ int Thread::id()
 	return _id;
 }
 
+void Thread::exit_running(int exit_code)
+{
+	_running->thread_exit(exit_code);
+}
+
 // Retornar contexto da thread
 Thread::Context *Thread::context()
 {
@@ -36,18 +41,11 @@ Thread::Context *Thread::context()
  */
 int Thread::switch_context(Thread *prev, Thread *next)
 {
+
 	db<Thread>(TRC) << "Thread::switch_context()\n";
 	_running = next;
 	return CPU::switch_context(prev->context(), next->context());
 }
-
-// Constutor vazio para criar thread main
-/*
-Thread::Thread(){
-	_context = new Context();
-	_id = _last_id++;
-}
-*/
 
 /*
  * Termina a thread.
@@ -58,17 +56,16 @@ void Thread::thread_exit(int exit_code)
 {
 	db<Thread>(TRC) << "Thread::thread_exit()\n";
 
+	std::cout << "exit()" << std::endl;
+	std::cout << "exit code: " << exit_code << std::endl;
 	_state = FINISHING;
-	_ready.insert(&_link);
-	_running = &_dispatcher;
-	_dispatcher._state = RUNNING;
-	_ready.remove(&_dispatcher._link);
-	if (this->called_join != nullptr)
+	std::cout << called_join << std::endl;
+	if (called_join != nullptr)
 	{
-		this->called_join->resume();
+		called_join->resume();
 	}
-	this->_exit_code = exit_code;
-	switch_context(this, &_dispatcher);
+	_exit_code = exit_code;
+	yield();
 }
 /*
  * NOVO MÉTODO DESTE TRABALHO.
@@ -79,8 +76,7 @@ void Thread::thread_exit(int exit_code)
 void Thread::dispatcher()
 {
 	db<Thread>(TRC) << "Thread::dispatcher()\n";
-	int size = _ready.size();
-	while (size > 0)
+	while (_ready.size() > 0)
 	{
 		Thread *next = _ready.head()->object();
 		_ready.remove_head();
@@ -90,14 +86,17 @@ void Thread::dispatcher()
 		_running = next;
 		_running->_state = RUNNING;
 
+		std::cout << "dispatcher a size = " << _ready.size() << std::endl;
 		switch_context(&_dispatcher, _running);
+		std::cout << "dispatcher b" << std::endl;
+
 		if (next->_state == FINISHING)
 		{
 			_ready.remove(next);
+			std::cout << "removed" << std::endl;
 		}
-
-		size = _ready.size();
 	}
+	std::cout << "ending dispatcher" << std::endl;
 	_dispatcher._state = FINISHING;
 	switch_context(&_dispatcher, &_main);
 }
@@ -128,11 +127,12 @@ void Thread::init(void (*main)(void *))
  */
 void Thread::yield()
 {
+	std::cout << "yield" << std::endl;
 	db<Thread>(TRC) << "Thread::yield()\n";
 	_ready.remove(&_dispatcher);
 
 	int now = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-	if (_running->_state != FINISHING)
+	if (_running->_state != FINISHING && _running != &_main)
 	{
 		_running->_link.rank(now);
 	}
@@ -149,47 +149,51 @@ void Thread::yield()
 	Thread *tempptr = _running;
 	_running = &_dispatcher;
 	_running->_state = RUNNING;
-	switch_context(tempptr, _running);
+
+	std::cout << "switching" << std::endl;
+	switch_context(tempptr, &_dispatcher);
 };
 
 Thread::~Thread()
 {
 	db<Thread>(TRC) << "Thread::~Thread()\n";
-	delete this->_context;
+	delete _context;
 }
 
 int Thread::join()
 {
+	std::cout << "join" << std::endl;
 	db<Thread>(TRC) << "Thread::join()\n";
-	if (this->_state == FINISHING)
+	if (_state == FINISHING)
 	{
 		return _exit_code;
 	}
-	this->called_join = _running;
+	called_join = _running;
 	_running->suspend();
+	std::cout << "calling yield from join" << std::endl;
 	yield();
-	// Thread *tempptr = _running;
-	// this->_state = RUNNING;
-	// _running = this;
-	// _ready.remove(&this->_link);
-	// switch_context(tempptr, this);
-	return this->_exit_code;
+	return _exit_code;
 }
 
 void Thread::suspend()
 {
 	db<Thread>(TRC) << "Thread::suspend()\n";
-	this->_state = SUSPENDED;
+	_state = SUSPENDED;
 	_suspended.insert(&_link);
-	_ready.remove(&_link);
+	if (this != _running)
+	{
+		_ready.remove(&_link);
+	}
 }
 
 void Thread::resume()
 {
+
+	std::cout << "resume()" << std::endl;
 	db<Thread>(TRC) << "Thread::resume()\n";
-	_suspended.remove(&this->_link);
-	this->_state = READY;
-	_ready.insert(&this->_link);
+	_suspended.remove(&_link);
+	_state = READY;
+	_ready.insert(&_link);
 }
 void Thread::set_state(Thread::State state)
 {

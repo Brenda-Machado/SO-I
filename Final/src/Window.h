@@ -5,8 +5,8 @@
  * @author
  * @bug
  */
-#ifndef ENGINE_H
-#define ENGINE_H
+#ifndef WINDOW_H
+#define WINDOW_H
 
 #include <allegro5/allegro.h>
 #include <memory>
@@ -24,12 +24,12 @@ __USING_API
 class Menu;
 class Root;
 
-class Engine
+class Window
 {
 
 public:
-   Engine(int w, int h, int fps);
-   ~Engine();
+   Window(int w, int h, int fps);
+   ~Window();
 
    void init();
    void run();
@@ -42,6 +42,8 @@ public:
    void drawShip(std::shared_ptr<Sprite> sprite, int flags);
    void drawBackground();
 
+   static void start(Window *engine);
+
    inline int getWidth() const
    {
       return _displayWidth;
@@ -50,21 +52,9 @@ public:
    {
       return _displayHeight;
    }
-   // inline int getFps() const {
-   //    return _fps;
-   // }
 
 private:
    void loadSprites();
-   // Checks data of the spaceship
-   // void checkBoundary();
-   // void selectShipAnimation();
-   // std::shared_ptr<Sprite> spaceShip;
-   // Point centre;        /**< ship position */
-   // ALLEGRO_COLOR color; /**< ship color */
-   // Vector speed;        /**< movement speed in any direction */
-   // int row;             /**<row of animation to be played */
-   // int col;             /**< column of animation to be played */
 
    // Background
    Point bgMid; /**<point used by the background to draw from */

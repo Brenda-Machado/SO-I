@@ -116,6 +116,8 @@ public:
 
     static void wakeup(Thread *to_awake);
 
+    static void exit_running(int exit_code);
+
 private:
     int _id;
     Context *volatile _context;
