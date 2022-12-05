@@ -31,6 +31,7 @@ public:
     void end()
     {
         _finish = true;
+        std::cout << "called end Ship" << std::endl;
     }
     inline Point get_centre() const
     {

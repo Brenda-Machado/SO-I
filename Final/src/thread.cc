@@ -87,6 +87,7 @@ void Thread::dispatcher()
 		_running->_state = RUNNING;
 
 		std::cout << "dispatcher a size = " << _ready.size() << std::endl;
+		std::cout << "supended size" << _suspended.size() << std::endl;
 		switch_context(&_dispatcher, _running);
 		std::cout << "dispatcher b" << std::endl;
 

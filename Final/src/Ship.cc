@@ -34,6 +34,7 @@ void Ship::run()
 }
 void Ship::shipLoop()
 {
+    std::cout << "Ship::shipLoop()" << std::endl;
     setSpeed();
     float crt_time = al_current_time();
     float dt = crt_time - _prev_time;

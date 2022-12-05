@@ -114,6 +114,7 @@ void Window::run()
 
 void Window::gameLoop(float &prevTime)
 {
+   std::cout << "Window::gameLoop()" << std::endl;
    ALLEGRO_EVENT event;
    bool redraw = true;
    float crtTime;

@@ -14,6 +14,7 @@ void EventHandler::start(EventHandler *event_handler)
 {
     event_handler->init();
     event_handler->run();
+    Thread::exit_running(2);
 }
 
 void EventHandler::run()
@@ -22,6 +23,7 @@ void EventHandler::run()
     {
         eventLoop();
     }
+    std::cout << "eventHandler exited loop" << std::endl;
 }
 
 EventHandler::EventHandler(ALLEGRO_EVENT_QUEUE *_eventQueue)
@@ -42,6 +44,7 @@ void EventHandler::init()
 
 void EventHandler::eventLoop()
 {
+    std::cout << "EventHandler::eventLoop()" << std::endl;
     ALLEGRO_KEYBOARD_STATE kb;
 
     al_get_keyboard_state(&kb);

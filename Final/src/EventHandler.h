@@ -30,6 +30,7 @@ public:
     void end()
     {
         _finish = true;
+        std::cout << "called end Event handler" << std::endl;
     }
 
     inline act::action get_crt_event() const
