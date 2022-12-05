@@ -114,11 +114,12 @@ void Window::run()
 
 void Window::gameLoop(float &prevTime)
 {
+   std::cout << "Window::gameLoop()" << std::endl;
    ALLEGRO_EVENT event;
    bool redraw = true;
    float crtTime;
 
-   if (_event_handler->get_crt_event() == act::action::QUIT_GAME)
+   if (_event_handler->get_pressed_keys(act::action::QUIT_GAME))
    {
       std::cout << "sair\n";
    }

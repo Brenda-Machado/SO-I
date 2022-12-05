@@ -14,6 +14,7 @@ void EventHandler::start(EventHandler *event_handler)
 {
     event_handler->init();
     event_handler->run();
+    Thread::exit_running(2);
 }
 
 void EventHandler::run()
@@ -42,46 +43,21 @@ void EventHandler::init()
 
 void EventHandler::eventLoop()
 {
+    std::cout << "EventHandler::eventLoop()" << std::endl;
     ALLEGRO_KEYBOARD_STATE kb;
 
     al_get_keyboard_state(&kb);
-    _crt_event = input(kb); // irá retornar uma tecla de ação. TODO: necessário transformar em Thread e fazer a ação
+    input(kb); // irá retornar uma tecla de ação. TODO: necessário transformar em Thread e fazer a ação
     Thread::yield();
 }
 
-act::action EventHandler::input(ALLEGRO_KEYBOARD_STATE &kb)
+void EventHandler::input(ALLEGRO_KEYBOARD_STATE &kb)
 {
-    if (al_key_down(&kb, ALLEGRO_KEY_UP))
-    {
-        return act::action::MOVE_UP;
-    }
-    if (al_key_down(&kb, ALLEGRO_KEY_RIGHT))
-    {
-        return act::action::MOVE_RIGHT;
-    }
-    if (al_key_down(&kb, ALLEGRO_KEY_DOWN))
-    {
-        return act::action::MOVE_DOWN;
-    }
-    if (al_key_down(&kb, ALLEGRO_KEY_LEFT))
-    {
-        return act::action::MOVE_LEFT;
-    }
-    if (al_key_down(&kb, ALLEGRO_KEY_1))
-    {
-        std::cout << "missel\n";
-        return act::action::FIRE_PRIMARY;
-    }
-    if (al_key_down(&kb, ALLEGRO_KEY_SPACE))
-    {
-        std::cout << "tiro normal\n";
-        return act::action::FIRE_SECONDARY;
-    }
-    if (al_key_down(&kb, ALLEGRO_KEY_ESCAPE))
-    {
-        std::cout << "sair\n";
-        return act::action::QUIT_GAME;
-    }
-
-    return act::action::NO_ACTION;
+    _pressed_keys[act::action::MOVE_UP] = al_key_down(&kb, ALLEGRO_KEY_UP);
+    _pressed_keys[act::action::MOVE_RIGHT] = al_key_down(&kb, ALLEGRO_KEY_RIGHT);
+    _pressed_keys[act::action::MOVE_DOWN] = al_key_down(&kb, ALLEGRO_KEY_DOWN);
+    _pressed_keys[act::action::MOVE_LEFT] = al_key_down(&kb, ALLEGRO_KEY_LEFT);
+    _pressed_keys[act::action::FIRE_PRIMARY] = al_key_down(&kb, ALLEGRO_KEY_1);
+    _pressed_keys[act::action::FIRE_SECONDARY] = al_key_down(&kb, ALLEGRO_KEY_SPACE);
+    _pressed_keys[act::action::QUIT_GAME] = al_key_down(&kb, ALLEGRO_KEY_ESCAPE);
 }

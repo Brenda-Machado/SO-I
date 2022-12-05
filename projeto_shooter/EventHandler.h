@@ -16,6 +16,7 @@
 #include "Vector.h"
 #include "Action.h"
 #include "thread.h"
+#include <unordered_map>
 __USING_API
 class EventHandler
 {
@@ -26,15 +27,20 @@ public:
     void run();
     static void start(EventHandler *event_handler);
     void eventLoop();
-    act::action input(ALLEGRO_KEYBOARD_STATE &);
+    void input(ALLEGRO_KEYBOARD_STATE &);
     void end()
     {
         _finish = true;
+        std::cout << "called end Event handler" << std::endl;
     }
 
-    inline act::action get_crt_event() const
+    inline bool get_pressed_keys(act::action name) const
     {
-        return _crt_event;
+        if (_pressed_keys.find(name) != _pressed_keys.end())
+        {
+            return _pressed_keys.at(name);
+        }
+        return false;
     }
 
 private:
@@ -42,8 +48,8 @@ private:
     // allegro objects
     // ALLEGRO_TIMER *_timer;
     ALLEGRO_EVENT_QUEUE *_eventQueue;
-    act::action _crt_event;
     bool _finish;
+    std::unordered_map<act::action, bool> _pressed_keys;
 };
 
 #endif
