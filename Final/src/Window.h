@@ -19,6 +19,9 @@
 #include "EventHandler.h"
 #include "thread.h"
 #include "Ship.h"
+#include "Laser.h"
+
+#include <list>
 __USING_API
 // forward declarations
 class Menu;
@@ -31,16 +34,7 @@ public:
    Window(int w, int h, int fps);
    ~Window();
 
-   void init();
    void run();
-   void draw();
-   void update(double dt);
-
-   void gameLoop(float &prevTime);
-
-   // void moveShip();
-   void drawShip(std::shared_ptr<Sprite> sprite, int flags);
-   void drawBackground();
 
    static void start(Window *engine);
 
@@ -55,7 +49,15 @@ public:
 
 private:
    void loadSprites();
+   void init();
+   void draw();
+   void update(double dt);
 
+   void gameLoop(float &prevTime);
+
+   void drawShip(std::shared_ptr<Sprite> sprite, int flags);
+   void drawBackground();
+   void drawLaser(Laser laser);
    // Background
    Point bgMid; /**<point used by the background to draw from */
    Point fgMid;
@@ -69,6 +71,8 @@ private:
    int _displayWidth;
    int _displayHeight;
    int _fps;
+   std::list<Laser> _player_lasers;
+
    // allegro objects
    ALLEGRO_TIMER *_timer;
    ALLEGRO_EVENT_QUEUE *_eventQueue;

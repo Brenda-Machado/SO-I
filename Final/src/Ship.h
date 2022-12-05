@@ -18,12 +18,14 @@
 
 #include "EventHandler.h"
 #include "thread.h"
-#include "EventHandler.h"
+#include "Laser.h"
+
+#include <list>
 __USING_API
 class Ship
 {
 public:
-    Ship(Point centre, ALLEGRO_COLOR color, EventHandler *event_handler);
+    Ship(Point centre, ALLEGRO_COLOR color, EventHandler *event_handler, std::list<Laser> *lasers);
     static void start(Ship *ship);
     void run();
 
@@ -59,6 +61,7 @@ private:
     void selectShipAnimation();
     void checkBoundary();
     void setSpeed();
+    void createLaser();
 
     Point _centre;
     ALLEGRO_COLOR _color;
@@ -68,5 +71,7 @@ private:
     bool _finish;
     EventHandler *_event_handler;
     float _prev_time;
+    float _last_shot;
+    std::list<Laser> *_lasers;
 };
 #endif

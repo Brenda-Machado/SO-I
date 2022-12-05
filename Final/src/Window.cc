@@ -10,12 +10,19 @@
 #include <iostream>
 
 #include "Timer.h"
+void Window::drawLaser(Laser laser)
+{
+   Point tracer = laser.centre + laser.speed * (-0.05);
+   al_draw_line(laser.centre.x, laser.centre.y, tracer.x, tracer.y, laser.color, 3);
+}
+
 void Window::start(Window *window)
 {
    window->run();
    std::cout << "exiting engine" << std::endl;
    Thread::exit_running(10);
 }
+
 Window::Window(int w, int h, int fps)
 {
    _displayWidth = w;
@@ -150,6 +157,7 @@ void Window::gameLoop(float &prevTime)
       draw();
       al_flip_display();
    }
+   std::cout << "exiting gameLoop()" << std::endl;
    Thread::yield();
 }
 
@@ -169,6 +177,11 @@ void Window::draw()
 {
    drawBackground();
    drawShip(_ship->sprite, 0);
+
+   for (auto iter = _player_lasers.begin(); iter != _player_lasers.end(); iter++)
+   {
+      drawLaser(*iter);
+   }
 }
 
 void Window::drawShip(std::shared_ptr<Sprite> sprite, int flags)
@@ -183,7 +196,7 @@ void Window::drawBackground()
 void Window::loadSprites()
 {
    // Create Ship
-   _ship = new Ship(Point(215, 245), al_map_rgb(0, 200, 0), _event_handler);
+   _ship = new Ship(Point(215, 245), al_map_rgb(0, 200, 0), _event_handler, &_player_lasers);
 
    // represents the middle of the image width-wise, and top height-wise
    bgMid = Point(0, 0);

@@ -9,12 +9,23 @@
 #include <stdexcept>
 #include <iostream>
 
-Ship::Ship(Point centre, ALLEGRO_COLOR color, EventHandler *event_handler)
+Ship::Ship(Point centre, ALLEGRO_COLOR color, EventHandler *event_handler, std::list<Laser> *lasers)
 {
     _centre = centre;
     _color = color;
     _event_handler = event_handler;
     _finish = false;
+    _lasers = lasers;
+    _last_shot = 0;
+}
+void Ship::createLaser()
+{
+    float crt_time = al_current_time();
+    if (crt_time - _last_shot > 0.5)
+    {
+        _lasers->push_back(Laser(_centre, al_map_rgb(255, 0, 0), Vector(600, 0)));
+        _last_shot = crt_time;
+    }
 }
 void Ship::start(Ship *ship)
 {
@@ -36,12 +47,30 @@ void Ship::shipLoop()
 {
     std::cout << "Ship::shipLoop()" << std::endl;
     setSpeed();
+
     float crt_time = al_current_time();
     float dt = crt_time - _prev_time;
     _centre = _centre + _speed * dt;
+
+    for (auto iter = _lasers->begin(); iter != _lasers->end();)
+    {
+        iter->update_pos(dt);
+        std::cout << "laser centre" << std::endl;
+        if (!iter->active)
+        {
+            iter = _lasers->erase(iter);
+        }
+        else
+        {
+            iter++;
+        }
+    }
+
     selectShipAnimation();
     _speed = Vector(0, 0);
+
     checkBoundary();
+
     _prev_time = crt_time;
     Thread::yield();
 }
@@ -71,6 +100,7 @@ void Ship::setSpeed()
     if (_event_handler->get_pressed_keys(act::action::FIRE_SECONDARY))
     {
         std::cout << "tiro normal\n";
+        createLaser();
     }
 }
 void Ship::checkBoundary()
