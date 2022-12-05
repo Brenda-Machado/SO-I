@@ -47,14 +47,6 @@ int Thread::switch_context(Thread *prev, Thread *next)
 	return CPU::switch_context(prev->context(), next->context());
 }
 
-// Constutor vazio para criar thread main
-/*
-Thread::Thread(){
-	_context = new Context();
-	_id = _last_id++;
-}
-*/
-
 /*
  * Termina a thread.
  * exit_code é o código de término devolvido pela tarefa.
@@ -84,10 +76,8 @@ void Thread::thread_exit(int exit_code)
 void Thread::dispatcher()
 {
 	db<Thread>(TRC) << "Thread::dispatcher()\n";
-	std::cout << _ready.size() << std::endl;
 	while (_ready.size() > 0)
 	{
-		std::cout << _ready.size() << std::endl;
 		Thread *next = _ready.head()->object();
 		_ready.remove_head();
 
@@ -96,7 +86,7 @@ void Thread::dispatcher()
 		_running = next;
 		_running->_state = RUNNING;
 
-		std::cout << "dispatcher a" << std::endl;
+		std::cout << "dispatcher a size = " << _ready.size() << std::endl;
 		switch_context(&_dispatcher, _running);
 		std::cout << "dispatcher b" << std::endl;
 
@@ -105,8 +95,6 @@ void Thread::dispatcher()
 			_ready.remove(next);
 			std::cout << "removed" << std::endl;
 		}
-		std::cout << "size" << std::endl;
-		std::cout << _ready.size() << std::endl;
 	}
 	std::cout << "ending dispatcher" << std::endl;
 	_dispatcher._state = FINISHING;
@@ -162,7 +150,7 @@ void Thread::yield()
 	_running = &_dispatcher;
 	_running->_state = RUNNING;
 
-	std::cout << "going to dispatcher" << std::endl;
+	std::cout << "switching" << std::endl;
 	switch_context(tempptr, &_dispatcher);
 };
 
@@ -182,12 +170,8 @@ int Thread::join()
 	}
 	called_join = _running;
 	_running->suspend();
+	std::cout << "calling yield from join" << std::endl;
 	yield();
-	// Thread *tempptr = _running;
-	// this->_state = RUNNING;
-	// _running = this;
-	// _ready.remove(&this->_link);
-	// switch_context(tempptr, this);
 	return _exit_code;
 }
 

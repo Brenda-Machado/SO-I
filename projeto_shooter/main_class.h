@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include "traits.h"
-#include "Engine.h"
+#include "Window.h"
 #include <allegro5/allegro.h>
 #include <ctime>
 #include <cstdlib>
