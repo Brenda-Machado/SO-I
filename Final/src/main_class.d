@@ -215,4 +215,8 @@ main_class.o: main_class.cc /usr/include/stdc-predef.h main_class.h \
  /usr/include/x86_64-linux-gnu/sys/ucontext.h \
  /usr/include/x86_64-linux-gnu/bits/types/stack_t.h debug.h list.h \
  /usr/include/c++/9/chrono /usr/include/c++/9/ratio \
- /usr/include/c++/9/limits /usr/include/c++/9/bits/parse_numbers.h Ship.h
+ /usr/include/c++/9/limits /usr/include/c++/9/bits/parse_numbers.h \
+ /usr/include/c++/9/unordered_map /usr/include/c++/9/bits/hashtable.h \
+ /usr/include/c++/9/bits/hashtable_policy.h \
+ /usr/include/c++/9/bits/unordered_map.h \
+ /usr/include/c++/9/bits/erase_if.h Ship.h

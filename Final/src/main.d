@@ -217,4 +217,7 @@ main.o: main.cc /usr/include/stdc-predef.h thread.h cpu.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
  /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
  /usr/include/allegro5/allegro_image.h Vector.h Action.h EventHandler.h \
- Ship.h
+ /usr/include/c++/9/unordered_map /usr/include/c++/9/bits/hashtable.h \
+ /usr/include/c++/9/bits/hashtable_policy.h \
+ /usr/include/c++/9/bits/unordered_map.h \
+ /usr/include/c++/9/bits/erase_if.h Ship.h

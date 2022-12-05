@@ -217,6 +217,10 @@ Ship.o: Ship.cc /usr/include/stdc-predef.h Ship.h \
  /usr/include/c++/9/bits/istream.tcc traits.h debug.h list.h \
  /usr/include/c++/9/chrono /usr/include/c++/9/ratio \
  /usr/include/c++/9/limits /usr/include/c++/9/bits/parse_numbers.h \
+ /usr/include/c++/9/unordered_map /usr/include/c++/9/bits/hashtable.h \
+ /usr/include/c++/9/bits/hashtable_policy.h \
+ /usr/include/c++/9/bits/unordered_map.h \
+ /usr/include/c++/9/bits/erase_if.h \
  /usr/include/allegro5/allegro_primitives.h \
  /usr/include/allegro5/allegro_font.h /usr/include/allegro5/allegro_ttf.h \
  /usr/include/allegro5/allegro_audio.h \

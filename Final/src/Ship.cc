@@ -48,27 +48,27 @@ void Ship::shipLoop()
 void Ship::setSpeed()
 {
 
-    if (_event_handler->get_crt_event() == act::action::MOVE_UP)
+    if (_event_handler->get_pressed_keys(act::action::MOVE_UP))
     {
         _speed.y -= 250;
     }
-    if (_event_handler->get_crt_event() == act::action::MOVE_RIGHT)
+    if (_event_handler->get_pressed_keys(act::action::MOVE_RIGHT))
     {
         _speed.x += 250;
     }
-    if (_event_handler->get_crt_event() == act::action::MOVE_DOWN)
+    if (_event_handler->get_pressed_keys(act::action::MOVE_DOWN))
     {
         _speed.y += 250;
     }
-    if (_event_handler->get_crt_event() == act::action::MOVE_LEFT)
+    if (_event_handler->get_pressed_keys(act::action::MOVE_LEFT))
     {
         _speed.x -= 250;
     }
-    if (_event_handler->get_crt_event() == act::action::FIRE_SECONDARY)
+    if (_event_handler->get_pressed_keys(act::action::FIRE_SECONDARY))
     {
         std::cout << "missel\n";
     }
-    if (_event_handler->get_crt_event() == act::action::FIRE_PRIMARY)
+    if (_event_handler->get_pressed_keys(act::action::FIRE_SECONDARY))
     {
         std::cout << "tiro normal\n";
     }
