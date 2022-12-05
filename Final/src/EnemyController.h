@@ -27,9 +27,11 @@ public:
     ~EnemyController();
     void start();
     void spawn_enemies(int number_enemies);
-    void update_enemies(float dt);
+    void update_enemies();
     // mais classes conforme necessário
 private:
     bool game_over;
     EnemyList enemies;
+    float _last_spawn;
+    float crt_time;
 }

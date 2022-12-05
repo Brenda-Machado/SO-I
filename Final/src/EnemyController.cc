@@ -21,11 +21,21 @@ EnemyController::~EnemyController()
 }
 
 void EnemyController::start()
-{
+{   
+    crt_time = al_current_time();
+    _last_spawn = crt_time;
+    
     while (!game_over) 
     {
-        // adicionar controle do tempo
-        spawn_enemies(10);
+        if (crt_time - _last_spawn > 1)
+        {
+            spawn_enemies(8);
+            _last_spawn = crt_time;
+        }
+        if (enemies.size() > 0)
+        {
+            update_enemies();
+        }
     }
 }
 
@@ -42,11 +52,11 @@ void EnemyController::spawn_enemies(int number_enemies)
     }
 }
 
-void EnemyController::update_enemies(float dt)
+void EnemyController::update_enemies()
 {
     for (Enemy *enemy : enemies)
     {
-        enemy->update(dt);
+        enemy->update();
     }
 }
 
