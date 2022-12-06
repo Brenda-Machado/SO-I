@@ -24,21 +24,23 @@ __BEGIN_API
 class EnemyController
 {
 public:
-    EnemyController();
-    ~EnemyController();
+    EnemyController() { game_over = false; };
+    ~EnemyController() {};
     static void start(EnemyController *enemy_controller);
     void run();
     void addEnemy(Enemy *enemy);
     void removeEnemy(Enemy *enemy);
-    void init();
     void spawn_enemies();
     void update_enemies(float dt);
-    static void end() {};
+    void end() {
+        game_over = true;
+        _enemies->clear();
+    };
     // mais classes conforme necessário
 private:
+
     bool game_over;
-    std::list<Enemy> _enemies;
-    std::list<Point> _initial_positions;
+    std::list<Enemy*> *_enemies;
     float _last_spawn;
     float _crt_time;
 };
