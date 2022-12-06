@@ -1,6 +1,6 @@
 /**
  * @file Laser.h
- * @brief derived class of Projectile
+ * @brief Laser projectile
  *
  * @author
  * @bug

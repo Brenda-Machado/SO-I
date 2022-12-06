@@ -23,7 +23,7 @@ void Ship::createLaser()
     float crt_time = al_current_time();
     if (crt_time - _last_shot > 0.5)
     {
-        _lasers->push_back(Laser(_centre, al_map_rgb(255, 0, 0), Vector(600, 0)));
+        _lasers->push_back(Laser(_centre + Vector(1000, 0) * 0.05, al_map_rgb(255, 0, 0), Vector(1000, 0)));
         _last_shot = crt_time;
     }
 }

@@ -35,12 +35,6 @@ Window::Window(ALLEGRO_EVENT_QUEUE *ev, ALLEGRO_DISPLAY *dis, ALLEGRO_TIMER *tim
 
 Window::~Window()
 {
-   // if (_timer != NULL)
-   //    al_destroy_timer(_timer);
-   // if (_eventQueue != NULL)
-   //    al_destroy_event_queue(_eventQueue);
-   // if (_display != NULL)
-   //    al_destroy_display(_display);
 
    bg.reset();
    _ship->sprite.reset();
@@ -52,43 +46,6 @@ Window::~Window()
 // sources
 void Window::init()
 {
-   // // initialize allegro
-   // al_init();
-   // // create the display
-   // if ((_display = al_create_display(_displayWidth, _displayHeight)) == NULL)
-   // {
-   //    std::cout << "Cannot initialize the display\n";
-   //    exit(1);
-   // }
-   // // initialize addons
-   // al_init_primitives_addon();
-   // al_init_font_addon();
-   // al_init_ttf_addon();
-   // al_init_image_addon();
-   // // initialize our timers
-   // if ((_timer = al_create_timer(1.0 / _fps)) == NULL)
-   // {
-   //    std::cout << "error, could not create timer\n";
-   //    exit(1);
-   // }
-   // if ((_eventQueue = al_create_event_queue()) == NULL)
-   // {
-   //    std::cout << "error, could not create event queue\n";
-   //    exit(1);
-   // }
-   // // register our allegro _eventQueue
-   // al_register_event_source(_eventQueue, al_get_display_event_source(_display));
-   // al_register_event_source(_eventQueue, al_get_timer_event_source(_timer));
-   // al_start_timer(_timer);
-   // // // install keyboard
-   // if (!al_install_keyboard())
-   // {
-   //    std::cerr << "Could not install keyboard\n";
-   // }
-
-   // // register keyboard
-   // al_register_event_source(_eventQueue, al_get_keyboard_event_source());
-
    _event_handler = new EventHandler(_eventQueue);
 
    // inicia _ship
@@ -96,17 +53,23 @@ void Window::init()
 
    _event_thread = new Thread(EventHandler::start, _event_handler);
    _ship_thread = new Thread(Ship::start, _ship);
+   _mine_thread = new Thread(Mine::start, &_mines, &_enemy_lasers);
 }
 
 // repeatedly call the state manager function until the _state is EXIT
 void Window::run()
 {
    float prevTime = 0;
+   float tempPrevTime = 0;
    // main engine loop
    while (!_finish)
    {
-      gameLoop(prevTime);
+      gameLoop(prevTime, tempPrevTime);
    }
+
+   Mine::end();
+   _mine_thread->join();
+   delete _mine_thread;
 
    _ship->end();
    _ship_thread->join();
@@ -117,16 +80,34 @@ void Window::run()
    delete _event_thread;
 }
 
-void Window::gameLoop(float &prevTime)
+void Window::gameLoop(float &prevTime, float &temp)
 {
    std::cout << "Window::gameLoop()" << std::endl;
    ALLEGRO_EVENT event;
    bool redraw = true;
    float crtTime;
 
+   // tirar depois, junto com update do player
+   float tempcrttime = al_get_time();
+   float tempDt = tempcrttime - temp;
+   temp = tempcrttime;
+   for (auto iter = _enemy_lasers.begin(); iter != _enemy_lasers.end(); iter++)
+   {
+      iter->update_pos(tempDt);
+      if (!iter->active)
+      {
+         iter = _enemy_lasers.erase(iter);
+      }
+      else
+      {
+         iter++;
+      }
+   }
+
    if (_event_handler->get_pressed_keys(act::action::QUIT_GAME))
    {
-      std::cout << "sair\n";
+      _finish = true;
+      return;
    }
 
    // get event
@@ -180,11 +161,23 @@ void Window::draw()
    {
       drawLaser(*iter);
    }
+   for (auto iter = _enemy_lasers.begin(); iter != _enemy_lasers.end(); iter++)
+   {
+      drawLaser(*iter);
+   }
+   for (auto iter = _mines.begin(); iter != _mines.end(); iter++)
+   {
+      drawMine(spikeBomb, *iter);
+   }
 }
 
 void Window::drawShip(std::shared_ptr<Sprite> sprite, int flags)
 {
    sprite->draw_region(_ship->get_row(), _ship->get_col(), 47.0, 40.0, _ship->get_centre(), flags);
+}
+void Window::drawMine(std::shared_ptr<Sprite> sprite, Mine mine)
+{
+   sprite->draw_region(mine.row, mine.col, 40.0, 41.0, mine.centre, 0);
 }
 void Window::drawBackground()
 {
@@ -207,9 +200,15 @@ void Window::loadSprites()
    ALLEGRO_PATH *path = al_get_standard_path(ALLEGRO_RESOURCES_PATH);
    al_append_path_component(path, "resources");
    al_change_directory(al_path_cstr(path, '/'));
+
    // sprites
    _ship->sprite = std::make_shared<Sprite>("Sprite2.png"); // espaçonave do usuário
    bg = std::make_shared<Sprite>("BGstars.png");            // fundo da tela - background
-   // delete path
+   // explosion = std::make_shared<Sprite>("explode.png");
+   spikeBomb = std::make_shared<Sprite>("spikebomb.png");
+
+   // _ship->sprite = std::make_shared<Sprite>("/home/joao/Projects/UFSC/SO1/Final/src/resources/Sprite2.png"); // espaçonave do usuário
+   // bg = std::make_shared<Sprite>("/home/joao/Projects/UFSC/SO1/Final/src/resources/BGstars.png");            // fundo da tela - background
+   // delete path;
    al_destroy_path(path);
 }

@@ -13,5 +13,4 @@ __USING_API
 int main(void)
 {
    System::init(&Main::run);
-   return 0;
 }
