@@ -59,7 +59,7 @@ private:
    void drawShip(std::shared_ptr<Sprite> sprite, int flags);
    void drawBackground();
    void drawLaser(Laser laser);
-   void drawEnemies(EnemyList enemies);
+   void drawEnemies();
    // Background
    Point bgMid; /**<point used by the background to draw from */
    Point fgMid;

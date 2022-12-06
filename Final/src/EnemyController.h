@@ -26,16 +26,21 @@ class EnemyController
 public:
     EnemyController();
     ~EnemyController();
-    void start();
-    void spawn_enemies(int number_enemies);
+    static void start(EnemyController *enemy_controller);
+    void run();
+    void addEnemy(Enemy *enemy);
+    void removeEnemy(Enemy *enemy);
+    void init();
+    void spawn_enemies();
     void update_enemies(float dt);
+    static void end() {};
     // mais classes conforme necessário
 private:
     bool game_over;
     std::list<Enemy> _enemies;
     std::list<Point> _initial_positions;
     float _last_spawn;
-    float crt_time;
-}
+    float _crt_time;
+};
 
 __END_API

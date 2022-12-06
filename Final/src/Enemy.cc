@@ -2,6 +2,7 @@
 
 __BEGIN_API
 
+
 void Enemy::spawn()
 {
     _alive = true;
@@ -14,6 +15,11 @@ void Enemy::update(float dt)
     {
         // Update sprite
     } 
+}
+
+void Enemy::move()
+{
+    // Move the enemy
 }
 
 __END_API

@@ -10,6 +10,9 @@
 #include <iostream>
 
 #include "Timer.h"
+
+__USING_API
+
 void Window::drawLaser(Laser laser)
 {
    Point tracer = laser.centre + laser.speed * (-0.05);
@@ -32,6 +35,7 @@ Window::Window(int w, int h, int fps)
    _timer = NULL;
    _eventQueue = NULL;
    _event_handler = NULL;
+   _enemy_controller = NULL;
    init();
 }
 
@@ -93,6 +97,7 @@ void Window::init()
    al_register_event_source(_eventQueue, al_get_keyboard_event_source());
 
    _event_handler = new EventHandler(_eventQueue);
+   _enemy_controller = new EnemyController();
 
    // inicia _ship
    loadSprites();
@@ -199,12 +204,12 @@ void Window::drawBackground()
 {
    bg->draw_parallax_background(bgMid.x, 0);
 }
-void Window::drawEnemies(EnemyList enemies)
+void Window::drawEnemies()
 {
-   for (Enemy *enemy : enemies) {
-      Point tracer = enemy._position + enemy.speed * (-0.05);
-      enemy.sprite = std::make_shared<Sprite>("EnemyBasic.png");
-      enemy.sprite->draw_region(tracer);
+   // for (Enemy *enemy : enemies) {
+   //    Point tracer = enemy._position + enemy.speed * (-0.05);
+   //    enemy.sprite = std::make_shared<Sprite>("EnemyBasic.png");
+   //    enemy.sprite->draw_region(tracer);
    }
 
 void Window::loadSprites()
