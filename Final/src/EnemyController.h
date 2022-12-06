@@ -9,21 +9,21 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include <memory>
 
 #include <string>
 #include "Vector.h"
-#include "list.h"
 #include "Point.h"
 #include "Enemy.h"
 #include "Sprite.h"
 #include "time.h"
+#include <list>
+
+__BEGIN_API
 
 class EnemyController
 {
 public:
-    typedef List<Enemy> EnemyList;
-    typedef List<Point> PositionList;
-
     EnemyController();
     ~EnemyController();
     void start();
@@ -32,8 +32,10 @@ public:
     // mais classes conforme necessário
 private:
     bool game_over;
-    EnemyList enemies;
-    PositionList _initial_positions;
+    std::list<Enemy> _enemies;
+    std::list<Point> _initial_positions;
     float _last_spawn;
     float crt_time;
 }
+
+__END_API

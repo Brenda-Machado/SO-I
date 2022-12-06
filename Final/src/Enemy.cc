@@ -1,5 +1,7 @@
 #include "Enemy.h"
 
+__BEGIN_API
+
 void Enemy::spawn()
 {
     _alive = true;
@@ -10,6 +12,8 @@ void Enemy::update(float dt)
 {
     if (isAlive())
     {
-        _position = _speed * dt;
+        // Update sprite
     } 
 }
+
+__END_API

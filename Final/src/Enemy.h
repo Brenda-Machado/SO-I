@@ -39,8 +39,7 @@ public:
         return _damage;
     };
     bool isAlive() {
-        if (_hp > 0)
-            return _alive;
+        return _alive;
     };
     Sprite* getSprite() {
         return _sprite;
