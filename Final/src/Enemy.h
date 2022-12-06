@@ -5,14 +5,10 @@
  * @author
  * @bug
  */
-#ifndef ENEMY_H
-#define ENEMY_H
-
 #include <allegro5/allegro.h>
 
 #include "Vector.h"
 #include "Point.h"
-
 #include "thread.h"
 #include "Sprite.h"
 
@@ -22,32 +18,33 @@ class Enemy
 {
     
 public:
-    Enemy();
+    Enemy(Point _position, Vector _speed, int _hp, int _damage, bool _alive);
     ~Enemy();
     
     void spawn();
-    void update(double dt);
+    void update(float dt);
     
     void move();
     
-    void setPosition(Point position);
-    void setSpeed(Vector speed);
-    void setHp(int hp);
-    void setDamage(int damage);
-    
-    int getPosition();
-    int getSpeed();
-    int getHp();
-    int getDamage();
-
-    void setAlive(bool alive);
-    bool isAlive();
-    
-    void setDirection(int direction);
-    int getDirection();
-    
-    void setSprite(ALLEGRO_BITMAP *sprite);
-    ALLEGRO_BITMAP *getSprite();
+    Point getPosition() {
+        return _position;
+    };
+    Vector getSpeed() {
+        return _speed;
+    };
+    int getHp() {
+        return _hp;
+    };
+    int getDamage() {
+        return _damage;
+    };
+    bool isAlive() {
+        if (_hp > 0)
+            return _alive;
+    };
+    Sprite* getSprite() {
+        return _sprite;
+    };
 
 private:
     Point _position; // center of the enemy
@@ -55,10 +52,8 @@ private:
     int _hp;
     int _damage;
     bool _alive;
-    int _direction;
     
-    ALLEGRO_BITMAP *_sprite;
-}
-#endif
+    Sprite *_sprite;
+};
 
 __END_API

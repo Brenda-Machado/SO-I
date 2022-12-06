@@ -22,16 +22,18 @@ class EnemyController
 {
 public:
     typedef List<Enemy> EnemyList;
+    typedef List<Point> PositionList;
 
     EnemyController();
     ~EnemyController();
     void start();
     void spawn_enemies(int number_enemies);
-    void update_enemies();
+    void update_enemies(float dt);
     // mais classes conforme necessário
 private:
     bool game_over;
     EnemyList enemies;
+    PositionList _initial_positions;
     float _last_spawn;
     float crt_time;
 }

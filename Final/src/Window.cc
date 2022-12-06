@@ -48,6 +48,7 @@ Window::~Window()
    _ship->sprite.reset();
    delete _event_handler;
    delete _ship;
+   delete _enemy_controller;
 }
 
 // initialize Allegro, the _display window, the addons, the timers, and event
@@ -98,6 +99,7 @@ void Window::init()
 
    _event_thread = new Thread(EventHandler::start, _event_handler);
    _ship_thread = new Thread(Ship::start, _ship);
+   _controller_thread = new Thread(EnemyController::start, _enemy_controller);
 }
 
 // repeatedly call the state manager function until the _state is EXIT
@@ -117,6 +119,10 @@ void Window::run()
    _event_handler->end();
    _event_thread->join();
    delete _event_thread;
+
+   _enemy_controller->end();
+   _controller_thread->join();
+   delete _controller_thread;
 }
 
 void Window::gameLoop(float &prevTime)
@@ -177,6 +183,7 @@ void Window::draw()
 {
    drawBackground();
    drawShip(_ship->sprite, 0);
+   drawEnemies();
 
    for (auto iter = _player_lasers.begin(); iter != _player_lasers.end(); iter++)
    {
@@ -192,6 +199,13 @@ void Window::drawBackground()
 {
    bg->draw_parallax_background(bgMid.x, 0);
 }
+void Window::drawEnemies(EnemyList enemies)
+{
+   for (Enemy *enemy : enemies) {
+      Point tracer = enemy._position + enemy.speed * (-0.05);
+      enemy.sprite = std::make_shared<Sprite>("EnemyBasic.png");
+      enemy.sprite->draw_region(tracer);
+   }
 
 void Window::loadSprites()
 {

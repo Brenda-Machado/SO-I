@@ -20,6 +20,7 @@
 #include "thread.h"
 #include "Ship.h"
 #include "Laser.h"
+#include "EnemyController.h"
 
 #include <list>
 __USING_API
@@ -58,6 +59,7 @@ private:
    void drawShip(std::shared_ptr<Sprite> sprite, int flags);
    void drawBackground();
    void drawLaser(Laser laser);
+   void drawEnemies(EnemyList enemies);
    // Background
    Point bgMid; /**<point used by the background to draw from */
    Point fgMid;
@@ -86,6 +88,9 @@ private:
 
    Ship *_ship;
    Thread *_ship_thread;
+
+   EnemyController *_enemy_controller;
+   Thread *_controller_thread;
 };
 
 #endif
