@@ -27,7 +27,7 @@ void EnemyController::run()
         }
         if (!_enemies->empty())
         {
-            update_enemies(_last_spawn - _crt_time);
+            check_enemies();
         }
     }
 }
@@ -44,14 +44,29 @@ void EnemyController::removeEnemy(Enemy *enemy)
 
 void EnemyController::spawn_enemies()
 {   
-
+    for (int i = 0; i < 8; i++) {
+        Enemy *enemy = new Enemy(Point(0,0), Vector(0,0), 0, 0, true);
+        addEnemy(enemy);
+    }
 }
 
-void EnemyController::update_enemies(float dt)
+void EnemyController::updateEnemy(Enemy *enemy) 
 {
-
+    if (enemy->isAlive()) 
+    {
+        // atualiza a posição
+    } else {
+        removeEnemy(enemy);
+    }
 }
 
+void EnemyController::check_enemies()
+{
+    for (auto iter = _enemies->begin(); iter != _enemies->end(); iter++)
+   {
+        updateEnemy(*iter);
+   }
+}
 
 //mais metódos...
 

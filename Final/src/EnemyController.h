@@ -30,8 +30,9 @@ public:
     void run();
     void addEnemy(Enemy *enemy);
     void removeEnemy(Enemy *enemy);
+    void updateEnemy(Enemy *enemy);
     void spawn_enemies();
-    void update_enemies(float dt);
+    void check_enemies();
     void end() {
         game_over = true;
         _enemies->clear();
