@@ -46,10 +46,11 @@ void Ship::run()
 void Ship::shipLoop()
 {
     std::cout << "Ship::shipLoop()" << std::endl;
-    setSpeed();
 
     float crt_time = al_current_time();
     float dt = crt_time - _prev_time;
+
+    setSpeed();
     _centre = _centre + _speed * dt;
 
     for (auto iter = _lasers->begin(); iter != _lasers->end();)
@@ -80,28 +81,33 @@ void Ship::setSpeed()
     if (_event_handler->get_pressed_keys(act::action::MOVE_UP))
     {
         _speed.y -= 250;
+        std::cout << "u";
     }
     if (_event_handler->get_pressed_keys(act::action::MOVE_RIGHT))
     {
         _speed.x += 250;
+        std::cout << "r";
     }
     if (_event_handler->get_pressed_keys(act::action::MOVE_DOWN))
     {
         _speed.y += 250;
+        std::cout << "d";
     }
     if (_event_handler->get_pressed_keys(act::action::MOVE_LEFT))
     {
         _speed.x -= 250;
+        std::cout << "l";
     }
     if (_event_handler->get_pressed_keys(act::action::FIRE_SECONDARY))
     {
         std::cout << "missel\n";
     }
-    if (_event_handler->get_pressed_keys(act::action::FIRE_SECONDARY))
+    if (_event_handler->get_pressed_keys(act::action::FIRE_PRIMARY))
     {
-        std::cout << "tiro normal\n";
+        std::cout << "fire";
         createLaser();
     }
+    std::cout << std::endl;
 }
 void Ship::checkBoundary()
 {

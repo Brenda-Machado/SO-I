@@ -16,8 +16,10 @@ void CPU::Context::load()
 
 CPU::Context::~Context()
 {
+    std::cout << "~Context" << std::endl;
     if (_stack)
         delete[] _stack;
+    std::cout << "~Context end" << std::endl;
 }
 
 int CPU::switch_context(Context *from, Context *to)

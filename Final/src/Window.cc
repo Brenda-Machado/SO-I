@@ -23,26 +23,24 @@ void Window::start(Window *window)
    Thread::exit_running(10);
 }
 
-Window::Window(int w, int h, int fps)
+Window::Window(ALLEGRO_EVENT_QUEUE *ev, ALLEGRO_DISPLAY *dis, ALLEGRO_TIMER *tim)
 {
-   _displayWidth = w;
-   _displayHeight = h;
-   _fps = fps;
    _finish = false;
-   _timer = NULL;
-   _eventQueue = NULL;
+   _timer = tim;
+   _eventQueue = ev;
+   _display = dis;
    _event_handler = NULL;
    init();
 }
 
 Window::~Window()
 {
-   if (_timer != NULL)
-      al_destroy_timer(_timer);
-   if (_eventQueue != NULL)
-      al_destroy_event_queue(_eventQueue);
-   if (_display != NULL)
-      al_destroy_display(_display);
+   // if (_timer != NULL)
+   //    al_destroy_timer(_timer);
+   // if (_eventQueue != NULL)
+   //    al_destroy_event_queue(_eventQueue);
+   // if (_display != NULL)
+   //    al_destroy_display(_display);
 
    bg.reset();
    _ship->sprite.reset();
@@ -54,42 +52,42 @@ Window::~Window()
 // sources
 void Window::init()
 {
-   // initialize allegro
-   al_init();
-   // create the display
-   if ((_display = al_create_display(_displayWidth, _displayHeight)) == NULL)
-   {
-      std::cout << "Cannot initialize the display\n";
-      exit(1);
-   }
-   // initialize addons
-   al_init_primitives_addon();
-   al_init_font_addon();
-   al_init_ttf_addon();
-   al_init_image_addon();
-   // initialize our timers
-   if ((_timer = al_create_timer(1.0 / _fps)) == NULL)
-   {
-      std::cout << "error, could not create timer\n";
-      exit(1);
-   }
-   if ((_eventQueue = al_create_event_queue()) == NULL)
-   {
-      std::cout << "error, could not create event queue\n";
-      exit(1);
-   }
-   // register our allegro _eventQueue
-   al_register_event_source(_eventQueue, al_get_display_event_source(_display));
-   al_register_event_source(_eventQueue, al_get_timer_event_source(_timer));
-   al_start_timer(_timer);
-   // // install keyboard
-   if (!al_install_keyboard())
-   {
-      std::cerr << "Could not install keyboard\n";
-   }
+   // // initialize allegro
+   // al_init();
+   // // create the display
+   // if ((_display = al_create_display(_displayWidth, _displayHeight)) == NULL)
+   // {
+   //    std::cout << "Cannot initialize the display\n";
+   //    exit(1);
+   // }
+   // // initialize addons
+   // al_init_primitives_addon();
+   // al_init_font_addon();
+   // al_init_ttf_addon();
+   // al_init_image_addon();
+   // // initialize our timers
+   // if ((_timer = al_create_timer(1.0 / _fps)) == NULL)
+   // {
+   //    std::cout << "error, could not create timer\n";
+   //    exit(1);
+   // }
+   // if ((_eventQueue = al_create_event_queue()) == NULL)
+   // {
+   //    std::cout << "error, could not create event queue\n";
+   //    exit(1);
+   // }
+   // // register our allegro _eventQueue
+   // al_register_event_source(_eventQueue, al_get_display_event_source(_display));
+   // al_register_event_source(_eventQueue, al_get_timer_event_source(_timer));
+   // al_start_timer(_timer);
+   // // // install keyboard
+   // if (!al_install_keyboard())
+   // {
+   //    std::cerr << "Could not install keyboard\n";
+   // }
 
-   // register keyboard
-   al_register_event_source(_eventQueue, al_get_keyboard_event_source());
+   // // register keyboard
+   // al_register_event_source(_eventQueue, al_get_keyboard_event_source());
 
    _event_handler = new EventHandler(_eventQueue);
 

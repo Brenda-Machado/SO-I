@@ -31,7 +31,7 @@ class Window
 {
 
 public:
-   Window(int w, int h, int fps);
+   Window(ALLEGRO_EVENT_QUEUE *ev, ALLEGRO_DISPLAY *dis, ALLEGRO_TIMER *tim);
    ~Window();
 
    void run();
