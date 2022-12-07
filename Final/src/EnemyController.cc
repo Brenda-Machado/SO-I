@@ -16,19 +16,20 @@ void EnemyController::start(EnemyController *enemy_controller)
 }
 
 void EnemyController::run()
-{
+{   
+    std::cout << "EnemyController::run()" << std::endl;
     while (!game_over)
     {   
         _crt_time = al_current_time();
         if (_crt_time - _last_spawn > 15000) { // 15 segundos
             spawn_enemies();
-            std::cout << "spawn enemies" << std::endl;
             _last_spawn = _crt_time;
         }
         if (!_enemies->empty())
         {
             check_enemies();
         }
+        Thread::yield();
     }
 }
 
@@ -44,6 +45,7 @@ void EnemyController::removeEnemy(Enemy *enemy)
 
 void EnemyController::spawn_enemies()
 {   
+    std::cout << "spawn enemies" << endl;
     for (int i = 0; i < 8; i++) {
         Enemy *enemy = new Enemy(Point(0,0), Vector(0,0), 0, 0, true);
         addEnemy(enemy);
