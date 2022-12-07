@@ -68,6 +68,7 @@ private:
    Vector fgSpeed;
    std::shared_ptr<Sprite> bg; /**<shared pointer to background animation */
    std::shared_ptr<Sprite> fg;
+   std::shared_ptr<Sprite> en; // enemy sprite
 
    // general game variables
    int _displayWidth;
