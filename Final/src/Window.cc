@@ -211,8 +211,7 @@ void Window::drawBackground()
 }
 void Window::drawEnemy(Enemy *enemy)
 {
-   
-   
+   en->draw_region(0, 0, 47.0, 40.0, enemy->getPosition(), 0);
 }
 void Window::loadSprites()
 {

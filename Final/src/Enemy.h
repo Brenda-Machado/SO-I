@@ -39,11 +39,21 @@ public:
     Sprite* getSprite() {
         return _sprite;
     };
+    inline int get_row() const
+    {
+        return _row;
+    }
+    inline int get_col() const
+    {
+        return _col;
+    }
 
 private:
     Point _position; // center of the enemy
     Vector _speed;
     int _hp;
+    int _row;
+    int _col;
     int _damage;
     bool _alive;
     
