@@ -37,13 +37,14 @@ void GameController::run()
         _crt_time = al_get_time();
         update_lasers(_player_lasers);
         update_lasers(_enemy_lasers);
+        check_enemy_collisions();
+        check_mine_collisions();
         _last_update = _crt_time;
         Thread::yield();
     }
 }
 void GameController::update_lasers(std::list<Laser> *lasers)
 {
-    // updating player lasers
     for (auto laser = lasers->begin(); laser != lasers->end();)
     {
         laser->update_pos(_crt_time - _last_update);
@@ -56,4 +57,63 @@ void GameController::update_lasers(std::list<Laser> *lasers)
             laser++;
         }
     }
+}
+
+bool GameController::collision_happened(Point src, Point trgt, int size)
+{
+    int dx = std::abs(trgt.x - src.x);
+    int dy = std::abs(trgt.y - src.y);
+    return ((dx * dx) + (dy * dy) <= size * size);
+}
+void GameController::check_enemy_collisions()
+{
+    for (auto enemy = _enemies->begin(); enemy != _enemies->end();)
+    {
+        if (enemy_has_colided(*enemy))
+        {
+            enemy = _enemies->erase(enemy);
+        }
+        else
+        {
+            enemy++;
+        }
+    }
+}
+bool GameController::enemy_has_colided(Enemy enemy)
+{
+    for (auto laser = _player_lasers->begin(); laser != _player_lasers->end(); laser++)
+    {
+        if (collision_happened(laser->centre, enemy.getPosition(), enemy.get_size()))
+        {
+            _player_lasers->erase(laser);
+            return true;
+        }
+    }
+    return false;
+}
+void GameController::check_mine_collisions()
+{
+    for (auto enemy = _mines->begin(); enemy != _mines->end();)
+    {
+        if (mine_has_colided(*enemy))
+        {
+            enemy = _mines->erase(enemy);
+        }
+        else
+        {
+            enemy++;
+        }
+    }
+}
+bool GameController::mine_has_colided(Mine mine)
+{
+    for (auto laser = _player_lasers->begin(); laser != _player_lasers->end(); laser++)
+    {
+        if (collision_happened(laser->centre, mine.centre, mine.size))
+        {
+            _player_lasers->erase(laser);
+            return true;
+        }
+    }
+    return false;
 }

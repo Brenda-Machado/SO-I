@@ -37,6 +37,7 @@ public:
     int row;
     std::list<Laser> *lasers;
     float creation_time;
+    int size;
 
 private:
     static bool _finish;

@@ -36,6 +36,7 @@ public:
     bool isAlive() { return _alive; };
     inline int get_row() const { return _row; };
     inline int get_col() const { return _col; };
+    int get_size() const { return _size; };
 
 private:
     Point _position; // center of the enemy
@@ -45,6 +46,7 @@ private:
     int _col;
     int _damage;
     bool _alive;
+    int _size;
     std::list<Laser> *_lasers;
 };
 #endif

@@ -6,6 +6,7 @@ Enemy::Enemy(Point _pos, Vector _spe, std::list<Laser> *lasers)
     _damage = 1;
     _row = 0;
     _col = 0;
+    _size = 30;
     _alive = true;
     _position = _pos;
     _speed = _spe;

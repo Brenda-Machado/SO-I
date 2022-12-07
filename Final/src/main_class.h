@@ -36,13 +36,22 @@ public:
         delete window;
         delete window_thread;
 
+        start_allegro(800, 600, 60);
         if (_timer != NULL)
+        {
+            std::cout << "destroying timer" << std::endl;
             al_destroy_timer(_timer);
+        }
         if (_eventQueue != NULL)
+        {
+            std::cout << "destroying eventqueue" << std::endl;
             al_destroy_event_queue(_eventQueue);
+        }
         if (_display != NULL)
+        {
+            std::cout << "destroying display" << std::endl;
             al_destroy_display(_display);
-
+        }
         std::cout << "ended" << std::endl;
     }
 

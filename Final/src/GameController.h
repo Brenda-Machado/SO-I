@@ -43,6 +43,11 @@ public:
 private:
     void run();
     void update_lasers(std::list<Laser> *lasers);
+    void check_enemy_collisions();
+    void check_mine_collisions();
+    bool collision_happened(Point src, Point trgt, int size);
+    bool enemy_has_colided(Enemy enemy);
+    bool mine_has_colided(Mine mine);
 
 private:
     Ship *_ship;

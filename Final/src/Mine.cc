@@ -46,6 +46,7 @@ Mine::Mine(Point cent, Vector spe, std::list<Laser> *lsr)
     speed = spe;
     lasers = lsr;
     creation_time = al_get_time();
+    size = 20;
 }
 
 void Mine::update_pos(float dt)
