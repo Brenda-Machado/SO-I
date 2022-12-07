@@ -222,7 +222,7 @@ void Window::loadSprites()
 {
    // Create Ship
    _ship = new Ship(Point(215, 245), al_map_rgb(0, 200, 0), _event_handler, &_player_lasers);
-   _boss = new Boss(Point(810, 300), Vector(-60,0));
+   _boss = new Boss(Point(810, 300), Vector(-60,0), al_map_rgb(155, 0, 0));
 
    // represents the middle of the image width-wise, and top height-wise
    bgMid = Point(0, 0);

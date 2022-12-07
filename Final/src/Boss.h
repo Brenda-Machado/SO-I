@@ -18,7 +18,7 @@ class Boss
 {
 
 public:
-    Boss (Point _pos, Vector _spe);
+    Boss (Point _pos, Vector _spe, ALLEGRO_COLOR c);
     ~Boss() {};
     std::shared_ptr<Sprite> _sprite;
     static void start(Boss *Boss);
@@ -41,7 +41,6 @@ public:
     inline int get_row() const { return _row; };
     inline int get_col() const { return _col; };
     void update(float dt);
-    void spawn();
 
 private:
     void bossLoop();
@@ -50,7 +49,9 @@ private:
 
     Point _position;
     Vector _speed;
+    ALLEGRO_COLOR _color;
     int _hp;
+    int _prev_time;
     int _row;
     int _col;
     int _last_spawn;
