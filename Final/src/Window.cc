@@ -211,7 +211,7 @@ void Window::drawBackground()
 }
 void Window::drawEnemy(Enemy *enemy)
 {
-   en->draw_region(0, 0, 47.0, 40.0, enemy->getPosition(), 0);
+   en->draw_region(enemy->get_row(), enemy->get_col(), 47.0, 40.0, enemy->getPosition(), 0);
 }
 void Window::loadSprites()
 {
@@ -232,7 +232,7 @@ void Window::loadSprites()
    // sprites
    _ship->sprite = std::make_shared<Sprite>("Sprite2.png"); // espaçonave do usuário
    bg = std::make_shared<Sprite>("BGstars.png");            // fundo da tela - background
-   en = std::make_shared<Sprite>("BasicEnemy.png");         // inimigo
+   en = std::make_shared<Sprite>("EnemyBasic.png");         // inimigo
    // delete path
    al_destroy_path(path);
 }

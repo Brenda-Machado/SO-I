@@ -18,7 +18,7 @@ class Enemy
 {
     
 public:
-    Enemy(Point _position, Vector _speed, int _hp, int _damage, bool _alive) {};
+    Enemy(Point _position, Vector _speed, int _hp, int _damage, bool _alive, int _row, int _col) {};
     ~Enemy() {};
     
     Point getPosition() {

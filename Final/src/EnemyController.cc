@@ -47,7 +47,7 @@ void EnemyController::spawn_enemies()
 {   
     std::cout << "spawn enemies" << std::endl;
     for (int i = 0; i < 8; i++) {
-        Enemy *enemy = new Enemy(Point(0,0), Vector(0,0), 0, 0, true);
+        Enemy *enemy = new Enemy(Point(0,0), Vector(0,0), 0, 0, true, 0, 0);
         addEnemy(enemy);
     }
 }
