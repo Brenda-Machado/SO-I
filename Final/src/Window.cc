@@ -44,6 +44,7 @@ Window::~Window()
    delete _event_handler;
    delete _ship;
    delete _enemy_controller;
+   delete _boss;
 }
 
 // initialize Allegro, the _display window, the addons, the timers, and event
@@ -60,6 +61,7 @@ void Window::init()
    _ship_thread = new Thread(Ship::start, _ship);
    _mine_thread = new Thread(Mine::start, &_mines, &_enemy_lasers);
    _controller_thread = new Thread(EnemyController::start, _enemy_controller);
+   _boss_thread = new Thread(Boss::start, _boss);
 }
 
 // repeatedly call the state manager function until the _state is EXIT
@@ -88,6 +90,10 @@ void Window::run()
    _enemy_controller->end();
    _controller_thread->join();
    delete _controller_thread;
+
+   _boss->end();
+   _boss_thread->join();
+   delete _boss_thread;
 }
 
 void Window::gameLoop(float &prevTime, float &temp)
@@ -167,6 +173,10 @@ void Window::draw()
    drawBackground();
    drawShip(_ship->sprite, 0);
 
+   if (_boss->isAlive()) {
+      drawBoss(_boss->_sprite, 0);
+   }
+
    for (auto iter = _player_lasers.begin(); iter != _player_lasers.end(); iter++)
    {
       drawLaser(*iter);
@@ -202,12 +212,17 @@ void Window::drawBackground()
 }
 void Window::drawEnemy(Enemy *enem)
 {
-   enemy->draw_region(enem->get_row(), enem->get_col(), 47.0, 40.0, enem->getPosition(), 0);
+   enemy->draw_region(enem->get_row(), enem->get_col(), 47.0, 47.0, enem->getPosition(), 0);
+}
+void Window::drawBoss(std::shared_ptr<Sprite> sprite, int flags)
+{
+   sprite->draw_boss(_boss->get_row(), _boss->get_col(), 200, 200, _boss->getPosition(), flags);
 }
 void Window::loadSprites()
 {
    // Create Ship
    _ship = new Ship(Point(215, 245), al_map_rgb(0, 200, 0), _event_handler, &_player_lasers);
+   _boss = new Boss(Point(810, 300), Vector(-5,0), al_map_rgb(155, 0, 0));
 
    // represents the middle of the image width-wise, and top height-wise
    bgMid = Point(0, 0);
@@ -230,6 +245,8 @@ void Window::loadSprites()
    // _ship->sprite = std::make_shared<Sprite>("/home/joao/Projects/UFSC/SO1/Final/src/resources/Sprite2.png"); // espaçonave do usuário
    // bg = std::make_shared<Sprite>("/home/joao/Projects/UFSC/SO1/Final/src/resources/BGstars.png");            // fundo da tela - background
    enemy = std::make_shared<Sprite>("EnemyBasic.png"); // inimigo
+   _boss->_sprite = std::make_shared<Sprite>("bossv2.png");        // boss
    // delete path;
    al_destroy_path(path);
+
 }
