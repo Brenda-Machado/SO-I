@@ -60,17 +60,22 @@ void Window::init()
    _ship_thread = new Thread(Ship::start, _ship);
    _mine_thread = new Thread(Mine::start, &_mines, &_enemy_lasers);
    _controller_thread = new Thread(EnemyController::start, _enemy_controller);
+   _game_controller_thread = new Thread(GameController::start,
+                                        _ship,
+                                        &_enemy_lasers,
+                                        &_player_lasers,
+                                        &_mines,
+                                        &_control_enemies);
 }
 
 // repeatedly call the state manager function until the _state is EXIT
 void Window::run()
 {
    float prevTime = 0;
-   float tempPrevTime = 0;
    // main engine loop
    while (!_finish)
    {
-      gameLoop(prevTime, tempPrevTime);
+      gameLoop(prevTime);
    }
 
    Mine::end();
@@ -88,31 +93,18 @@ void Window::run()
    _enemy_controller->end();
    _controller_thread->join();
    delete _controller_thread;
+
+   GameController::end();
+   _game_controller_thread->join();
+   delete _game_controller_thread;
 }
 
-void Window::gameLoop(float &prevTime, float &temp)
+void Window::gameLoop(float &prevTime)
 {
    std::cout << "Window::gameLoop()" << std::endl;
    ALLEGRO_EVENT event;
    bool redraw = true;
    float crtTime;
-
-   // tirar depois, junto com update do player
-   float tempcrttime = al_get_time();
-   float tempDt = tempcrttime - temp;
-   temp = tempcrttime;
-   for (auto iter = _enemy_lasers.begin(); iter != _enemy_lasers.end(); iter++)
-   {
-      iter->update_pos(tempDt);
-      if (!iter->active)
-      {
-         iter = _enemy_lasers.erase(iter);
-      }
-      else
-      {
-         iter++;
-      }
-   }
 
    if (_event_handler->get_pressed_keys(act::action::QUIT_GAME))
    {

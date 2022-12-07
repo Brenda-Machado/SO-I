@@ -53,19 +53,6 @@ void Ship::shipLoop()
     setSpeed();
     _centre = _centre + _speed * dt;
 
-    for (auto iter = _lasers->begin(); iter != _lasers->end();)
-    {
-        iter->update_pos(dt);
-        if (!iter->active)
-        {
-            iter = _lasers->erase(iter);
-        }
-        else
-        {
-            iter++;
-        }
-    }
-
     selectShipAnimation();
     _speed = Vector(0, 0);
 

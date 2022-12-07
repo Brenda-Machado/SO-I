@@ -22,6 +22,7 @@
 #include "Laser.h"
 #include "Mine.h"
 #include "EnemyController.h"
+#include "GameController.h"
 
 #include <list>
 __USING_API
@@ -55,7 +56,7 @@ private:
    void draw();
    void update(double dt);
 
-   void gameLoop(float &prevTime, float &temp);
+   void gameLoop(float &prevTime);
 
    void drawShip(std::shared_ptr<Sprite> sprite, int flags);
    void drawMine(std::shared_ptr<Sprite> sprite, Mine mine);
@@ -101,6 +102,8 @@ private:
 
    EnemyController *_enemy_controller;
    Thread *_controller_thread;
+
+   Thread *_game_controller_thread;
 };
 
 #endif
