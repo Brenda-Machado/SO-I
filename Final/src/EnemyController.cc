@@ -53,10 +53,16 @@ void EnemyController::spawn_enemies()
 }
 
 void EnemyController::updateEnemy(Enemy *enemy) 
-{
-    if (enemy->isAlive()) 
-    {
-        // atualiza a posição
+{   
+    std::cout << "enemy updatating" << std::endl;
+    Point centre = enemy->getPosition();
+    Vector speed = enemy->getSpeed();
+    if (enemy->isAlive())
+    {   
+        if ((centre.x > 800) ||(centre.x < 0) || (centre.y > 600) ||(centre.y < 0)) 
+        {
+            enemy->setPosition(centre + speed*0.01);
+        }
     } else {
         removeEnemy(enemy);
     }

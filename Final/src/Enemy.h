@@ -24,6 +24,9 @@ public:
     Point getPosition() {
         return _position;
     };
+    void setPosition(Point position) {
+        _position = position;
+    }
     Vector getSpeed() {
         return _speed;
     };
