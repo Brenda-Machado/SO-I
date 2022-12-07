@@ -36,4 +36,8 @@ private:
 
 __END_API
 
+<<<<<<< HEAD
 #endif
+=======
+#endif
+>>>>>>> 6ff5be0b54e900d59412899dc9b6650953f559db

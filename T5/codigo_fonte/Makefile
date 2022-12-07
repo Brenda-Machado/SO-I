@@ -19,6 +19,9 @@ thread.o: thread.cc thread.h
 
 system.o: system.cc system.h
 	g++ -c system.cc
+
+semaphore.o: semaphore.cc semaphore.h
+	g++ -c semaphore.cc
 	
 semaphore.o: semaphore.cc semaphore.h
 	g++ -c semaphore.cc 
