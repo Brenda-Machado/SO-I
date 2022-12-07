@@ -76,7 +76,7 @@ void Thread::thread_exit(int exit_code)
 void Thread::dispatcher()
 {
 	db<Thread>(TRC) << "Thread::dispatcher()\n";
-	while (_ready.size() > 0)
+	while (_ready.size() > 1 || _ready.head()->object() != &_main)
 	{
 		Thread *next = _ready.head()->object();
 		_ready.remove_head();
@@ -86,10 +86,10 @@ void Thread::dispatcher()
 		_running = next;
 		_running->_state = RUNNING;
 
-		std::cout << "dispatcher a size = " << _ready.size() << std::endl;
-		std::cout << "supended size" << _suspended.size() << std::endl;
+		// std::cout << "dispatcher a size = " << _ready.size() << std::endl;
+		// std::cout << "supended size" << _suspended.size() << std::endl;
 		switch_context(&_dispatcher, _running);
-		std::cout << "dispatcher b" << std::endl;
+		// std::cout << "dispatcher b" << std::endl;
 
 		if (next->_state == FINISHING)
 		{
@@ -100,6 +100,7 @@ void Thread::dispatcher()
 	std::cout << "ending dispatcher" << std::endl;
 	_dispatcher._state = FINISHING;
 	switch_context(&_dispatcher, &_main);
+	// CPU::switch_context(_dispatcher.context(), &_main_context);
 }
 
 /*
@@ -128,7 +129,7 @@ void Thread::init(void (*main)(void *))
  */
 void Thread::yield()
 {
-	std::cout << "yield" << std::endl;
+	// std::cout << "yield" << std::endl;
 	db<Thread>(TRC) << "Thread::yield()\n";
 	_ready.remove(&_dispatcher);
 
@@ -151,14 +152,16 @@ void Thread::yield()
 	_running = &_dispatcher;
 	_running->_state = RUNNING;
 
-	std::cout << "switching" << std::endl;
+	// std::cout << "switching" << std::endl;
 	switch_context(tempptr, &_dispatcher);
 };
 
 Thread::~Thread()
 {
 	db<Thread>(TRC) << "Thread::~Thread()\n";
+	std::cout << "~Thread" << std::endl;
 	delete _context;
+	std::cout << "~Thread completed" << std::endl;
 }
 
 int Thread::join()

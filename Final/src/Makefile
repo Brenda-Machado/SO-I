@@ -16,9 +16,9 @@ OBJECTS = $(SOURCES:.cc=.o)
 LIBDIR = -L/usr/lib/x86_64-linux-gnu
 
 LNFLAGS = -lallegro -lallegro_primitives -lallegro_image -lallegro_font \
--lallegro_ttf
+-lallegro_ttf -s
 LNFLAGST= -lallegro -lallegro_primitives -lallegro_image -lallegro_font \
--lallegro_ttf -ldl -lcppunit
+-lallegro_ttf -ldl -lcppunit -s
 
 
 # main target

@@ -2,17 +2,7 @@
 #include "thread.h"
 
 __BEGIN_API
-void Main::run(void *name)
-{
-
-    srand(time(0));
-
-    Window *window = new Window(800, 600, 60);
-    Thread *window_thread = new Thread(Window::start, window);
-    window_thread->join();
-    delete window;
-    delete window_thread;
-    Thread::exit_running(0);
-    std::cout << "ended" << std::endl;
-}
+ALLEGRO_TIMER *Main::_timer;
+ALLEGRO_EVENT_QUEUE *Main::_eventQueue;
+ALLEGRO_DISPLAY *Main::_display;
 __END_API

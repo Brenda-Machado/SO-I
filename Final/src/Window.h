@@ -20,6 +20,7 @@
 #include "thread.h"
 #include "Ship.h"
 #include "Laser.h"
+#include "Mine.h"
 #include "EnemyController.h"
 
 #include <list>
@@ -32,7 +33,7 @@ class Window
 {
 
 public:
-   Window(int w, int h, int fps);
+   Window(ALLEGRO_EVENT_QUEUE *ev, ALLEGRO_DISPLAY *dis, ALLEGRO_TIMER *tim);
    ~Window();
 
    void run();
@@ -54,9 +55,10 @@ private:
    void draw();
    void update(double dt);
 
-   void gameLoop(float &prevTime);
+   void gameLoop(float &prevTime, float &temp);
 
    void drawShip(std::shared_ptr<Sprite> sprite, int flags);
+   void drawMine(std::shared_ptr<Sprite> sprite, Mine mine);
    void drawBackground();
    void drawLaser(Laser laser);
    void drawEnemy(Enemy *enemy);
@@ -68,6 +70,8 @@ private:
    Vector fgSpeed;
    std::shared_ptr<Sprite> bg; /**<shared pointer to background animation */
    std::shared_ptr<Sprite> fg;
+   std::shared_ptr<Sprite> spikeBomb;
+   std::shared_ptr<Sprite> explosion;
    std::shared_ptr<Sprite> en; // enemy sprite
 
    // general game variables
@@ -75,7 +79,9 @@ private:
    int _displayHeight;
    int _fps;
    std::list<Laser> _player_lasers;
-   std::list<Enemy*> _control_enemies;
+   std::list<Mine> _mines;
+   std::list<Laser> _enemy_lasers;
+   std::list<Enemy *> _control_enemies;
 
    // allegro objects
    ALLEGRO_TIMER *_timer;
@@ -90,6 +96,8 @@ private:
 
    Ship *_ship;
    Thread *_ship_thread;
+
+   Thread *_mine_thread;
 
    EnemyController *_enemy_controller;
    Thread *_controller_thread;

@@ -53,11 +53,11 @@ void EventHandler::eventLoop()
 
 void EventHandler::input(ALLEGRO_KEYBOARD_STATE &kb)
 {
-    _pressed_keys[act::action::MOVE_UP] = al_key_down(&kb, ALLEGRO_KEY_UP);
-    _pressed_keys[act::action::MOVE_RIGHT] = al_key_down(&kb, ALLEGRO_KEY_RIGHT);
     _pressed_keys[act::action::MOVE_DOWN] = al_key_down(&kb, ALLEGRO_KEY_DOWN);
+    _pressed_keys[act::action::MOVE_RIGHT] = al_key_down(&kb, ALLEGRO_KEY_RIGHT);
     _pressed_keys[act::action::MOVE_LEFT] = al_key_down(&kb, ALLEGRO_KEY_LEFT);
-    _pressed_keys[act::action::FIRE_PRIMARY] = al_key_down(&kb, ALLEGRO_KEY_1);
-    _pressed_keys[act::action::FIRE_SECONDARY] = al_key_down(&kb, ALLEGRO_KEY_SPACE);
+    _pressed_keys[act::action::FIRE_SECONDARY] = al_key_down(&kb, ALLEGRO_KEY_1);
+    _pressed_keys[act::action::FIRE_PRIMARY] = al_key_down(&kb, ALLEGRO_KEY_SPACE);
     _pressed_keys[act::action::QUIT_GAME] = al_key_down(&kb, ALLEGRO_KEY_ESCAPE);
+    _pressed_keys[act::action::MOVE_UP] = al_key_down(&kb, ALLEGRO_KEY_UP);
 }
