@@ -22,6 +22,7 @@
 #include "Laser.h"
 #include "Mine.h"
 #include "EnemyController.h"
+#include "Boss.h"
 
 #include <list>
 __USING_API
@@ -62,6 +63,7 @@ private:
    void drawBackground();
    void drawLaser(Laser laser);
    void drawEnemy(Enemy *enemy);
+   void drawBoss(std::shared_ptr<Sprite> sprite, int flags);
    // Background
    Point bgMid; /**<point used by the background to draw from */
    Point fgMid;
@@ -101,6 +103,9 @@ private:
 
    EnemyController *_enemy_controller;
    Thread *_controller_thread;
+
+   Boss *_boss;
+   Thread *_boss_thread;
 };
 
 #endif
