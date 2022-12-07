@@ -24,7 +24,7 @@ CPU::Context::~Context()
 
 int CPU::switch_context(Context *from, Context *to)
 {
-    std::cout << "switching from " << from << " to " << to << std::endl;
+    // std::cout << "switching from " << from << " to " << to << std::endl;
     return swapcontext(&(from->_context), &(to->_context));
 }
 

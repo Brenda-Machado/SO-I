@@ -11,45 +11,31 @@
 #include "Point.h"
 #include "thread.h"
 #include "Sprite.h"
+#include "Laser.h"
 
-__BEGIN_API
+#include <list>
+#ifndef ENEMY_H
+#define ENEMY_H
+__USING_API
 
 class Enemy
 {
-    
 public:
-    Enemy(Point _position, Vector _speed, int _hp, int _damage, bool _alive, int _row, int _col) {};
-    ~Enemy() {};
-    
-    Point getPosition() {
-        return _position;
-    };
-    void setPosition(Point position) {
-        _position = position;
-    }
-    Vector getSpeed() {
-        return _speed;
-    };
-    int getHp() {
-        return _hp;
-    };
-    int getDamage() {
-        return _damage;
-    };
-    bool isAlive() {
-        return _alive;
-    };
-    Sprite* getSprite() {
-        return _sprite;
-    };
-    inline int get_row() const
-    {
-        return _row;
-    }
-    inline int get_col() const
-    {
-        return _col;
-    }
+    Enemy(Point _pos, Vector _spe, std::list<Laser> *lasers);
+    bool in_bound();
+    bool on_screen();
+    ~Enemy(){};
+    void shoot();
+
+    Point getPosition() { return _position; };
+    void setPosition(Point position) { _position = position; };
+    void kill() { _alive = false; };
+    Vector getSpeed() { return _speed; };
+    int getHp() { return _hp; };
+    int getDamage() { return _damage; };
+    bool isAlive() { return _alive; };
+    inline int get_row() const { return _row; };
+    inline int get_col() const { return _col; };
 
 private:
     Point _position; // center of the enemy
@@ -59,8 +45,6 @@ private:
     int _col;
     int _damage;
     bool _alive;
-    
-    Sprite *_sprite;
+    std::list<Laser> *_lasers;
 };
-
-__END_API
+#endif

@@ -72,7 +72,7 @@ private:
    std::shared_ptr<Sprite> fg;
    std::shared_ptr<Sprite> spikeBomb;
    std::shared_ptr<Sprite> explosion;
-   std::shared_ptr<Sprite> en; // enemy sprite
+   std::shared_ptr<Sprite> enemy; // enemy sprite
 
    // general game variables
    int _displayWidth;
@@ -81,7 +81,7 @@ private:
    std::list<Laser> _player_lasers;
    std::list<Mine> _mines;
    std::list<Laser> _enemy_lasers;
-   std::list<Enemy *> _control_enemies;
+   std::list<Enemy> _control_enemies;
 
    // allegro objects
    ALLEGRO_TIMER *_timer;

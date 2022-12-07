@@ -51,7 +51,7 @@ Window::~Window()
 void Window::init()
 {
    _event_handler = new EventHandler(_eventQueue);
-   _enemy_controller = new EnemyController(&_control_enemies);
+   _enemy_controller = new EnemyController(&_control_enemies, &_enemy_lasers);
 
    // inicia _ship
    loadSprites();
@@ -171,20 +171,20 @@ void Window::draw()
    {
       drawLaser(*iter);
    }
+
    for (auto iter = _enemy_lasers.begin(); iter != _enemy_lasers.end(); iter++)
    {
       drawLaser(*iter);
    }
+
    for (auto iter = _mines.begin(); iter != _mines.end(); iter++)
    {
       drawMine(spikeBomb, *iter);
    }
-   if (!_control_enemies.empty())
+   std::cout << "number of enemies = " << _control_enemies.size() << std::endl;
+   for (auto iter = _control_enemies.begin(); iter != _control_enemies.end(); iter++)
    {
-      for (auto iter = _control_enemies.begin(); iter != _control_enemies.end(); iter++)
-      {
-         drawEnemy(*iter);
-      }
+      drawEnemy(&(*iter));
    }
 }
 
@@ -200,9 +200,9 @@ void Window::drawBackground()
 {
    bg->draw_parallax_background(bgMid.x, 0);
 }
-void Window::drawEnemy(Enemy *enemy)
+void Window::drawEnemy(Enemy *enem)
 {
-   en->draw_region(enemy->get_row(), enemy->get_col(), 47.0, 40.0, enemy->getPosition(), 0);
+   enemy->draw_region(enem->get_row(), enem->get_col(), 47.0, 40.0, enem->getPosition(), 0);
 }
 void Window::loadSprites()
 {
@@ -229,7 +229,7 @@ void Window::loadSprites()
 
    // _ship->sprite = std::make_shared<Sprite>("/home/joao/Projects/UFSC/SO1/Final/src/resources/Sprite2.png"); // espaçonave do usuário
    // bg = std::make_shared<Sprite>("/home/joao/Projects/UFSC/SO1/Final/src/resources/BGstars.png");            // fundo da tela - background
-   en = std::make_shared<Sprite>("EnemyBasic.png"); // inimigo
+   enemy = std::make_shared<Sprite>("EnemyBasic.png"); // inimigo
    // delete path;
    al_destroy_path(path);
 }

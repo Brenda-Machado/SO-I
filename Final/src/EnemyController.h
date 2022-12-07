@@ -1,5 +1,5 @@
 /**
- * @file 
+ * @file
  * @brief
  *
  * @author
@@ -17,36 +17,37 @@
 #include "Enemy.h"
 #include "Sprite.h"
 #include "time.h"
+#include "Laser.h"
+
 #include <list>
 
-__BEGIN_API
+#ifndef ENEMYCONTROLLER_H
+#define ENEMYCONTROLLER_H
+
+__USING_API
 
 class EnemyController
 {
 public:
-    EnemyController(std::list<Enemy*> *enemies) { 
-        game_over = false;
-        _enemies = enemies;
-     };
-    ~EnemyController() {};
+    EnemyController(std::list<Enemy> *enemies, std::list<Laser> *lasers);
+    ~EnemyController(){};
     static void start(EnemyController *enemy_controller);
     void run();
-    void addEnemy(Enemy *enemy);
-    void removeEnemy(Enemy *enemy);
-    void updateEnemy(Enemy *enemy);
+    void updateEnemy(Enemy *enemy, float dt);
     void spawn_enemies();
-    void check_enemies();
-    void end() {
+    void check_enemies(float dt);
+    void end()
+    {
         game_over = true;
         _enemies->clear();
     };
     // mais classes conforme necessário
 private:
-
     bool game_over;
-    std::list<Enemy*> *_enemies;
+    std::list<Laser> *_lasers;
+    std::list<Enemy> *_enemies;
     float _last_spawn;
+    float _last_shot;
     float _crt_time;
 };
-
-__END_API
+#endif

@@ -12,7 +12,6 @@ Laser::Laser(Point cent, ALLEGRO_COLOR clr, Vector spe)
 }
 void Laser::update_pos(float dt)
 {
-    std::cout << "laser updatating" << std::endl;
     centre = centre + speed * dt;
     if (!in_bound())
         active = false;
