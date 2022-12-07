@@ -212,11 +212,11 @@ void Window::drawBackground()
 }
 void Window::drawEnemy(Enemy *enem)
 {
-   enemy->draw_region(enem->get_row(), enem->get_col(), 47.0, 40.0, enem->getPosition(), 0);
+   enemy->draw_region(enem->get_row(), enem->get_col(), 47.0, 47.0, enem->getPosition(), 0);
 }
 void Window::drawBoss(std::shared_ptr<Sprite> sprite, int flags)
 {
-   sprite->draw_region(_boss->get_row(), _boss->get_col(), 47.0, 40.0, _boss->getPosition(), flags);
+   sprite->draw_boss(_boss->get_row(), _boss->get_col(), 200, 200, _boss->getPosition(), flags);
 }
 void Window::loadSprites()
 {
