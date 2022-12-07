@@ -37,6 +37,8 @@ Window::~Window()
 {
 
    bg.reset();
+   spikeBomb.reset();
+   explosion.reset();
    _ship->sprite.reset();
    delete _event_handler;
    delete _ship;

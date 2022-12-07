@@ -76,7 +76,7 @@ void Thread::thread_exit(int exit_code)
 void Thread::dispatcher()
 {
 	db<Thread>(TRC) << "Thread::dispatcher()\n";
-	while (_ready.size() > 0)
+	while (_ready.size() > 1 || _ready.head()->object() != &_main)
 	{
 		Thread *next = _ready.head()->object();
 		_ready.remove_head();

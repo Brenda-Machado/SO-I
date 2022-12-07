@@ -43,7 +43,6 @@ public:
         if (_display != NULL)
             al_destroy_display(_display);
 
-        Thread::exit_running(0);
         std::cout << "ended" << std::endl;
     }
 

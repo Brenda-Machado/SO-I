@@ -56,7 +56,6 @@ void Ship::shipLoop()
     for (auto iter = _lasers->begin(); iter != _lasers->end();)
     {
         iter->update_pos(dt);
-        std::cout << "laser centre" << std::endl;
         if (!iter->active)
         {
             iter = _lasers->erase(iter);
