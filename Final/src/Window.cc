@@ -97,7 +97,7 @@ void Window::init()
    al_register_event_source(_eventQueue, al_get_keyboard_event_source());
 
    _event_handler = new EventHandler(_eventQueue);
-   _enemy_controller = new EnemyController();
+   _enemy_controller = new EnemyController(&_control_enemies);
 
    // inicia _ship
    loadSprites();
@@ -188,7 +188,6 @@ void Window::draw()
 {
    drawBackground();
    drawShip(_ship->sprite, 0);
-   drawEnemies();
 
    for (auto iter = _player_lasers.begin(); iter != _player_lasers.end(); iter++)
    {
@@ -204,14 +203,11 @@ void Window::drawBackground()
 {
    bg->draw_parallax_background(bgMid.x, 0);
 }
-void Window::drawEnemies()
+void Window::drawEnemy(Enemy *enemy)
 {
-   // for (Enemy *enemy : enemies) {
-   //    Point tracer = enemy._position + enemy.speed * (-0.05);
-   //    enemy.sprite = std::make_shared<Sprite>("EnemyBasic.png");
-   //    enemy.sprite->draw_region(tracer);
-   }
-
+   
+   
+}
 void Window::loadSprites()
 {
    // Create Ship

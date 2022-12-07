@@ -24,7 +24,10 @@ __BEGIN_API
 class EnemyController
 {
 public:
-    EnemyController() { game_over = false; };
+    EnemyController(std::list<Enemy*> *enemies) { 
+        game_over = false;
+        _enemies = enemies;
+     };
     ~EnemyController() {};
     static void start(EnemyController *enemy_controller);
     void run();

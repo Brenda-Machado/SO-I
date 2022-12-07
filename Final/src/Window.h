@@ -59,7 +59,7 @@ private:
    void drawShip(std::shared_ptr<Sprite> sprite, int flags);
    void drawBackground();
    void drawLaser(Laser laser);
-   void drawEnemies();
+   void drawEnemy(Enemy *enemy);
    // Background
    Point bgMid; /**<point used by the background to draw from */
    Point fgMid;
@@ -74,6 +74,7 @@ private:
    int _displayHeight;
    int _fps;
    std::list<Laser> _player_lasers;
+   std::list<Enemy*> _control_enemies;
 
    // allegro objects
    ALLEGRO_TIMER *_timer;
