@@ -36,7 +36,7 @@ void Boss::bossLoop() {
 
     float _crt_time = al_current_time();
     
-    if (_crt_time - _last_spawn > 10) {
+    if (_crt_time - _last_spawn > 60) {
         std::cout << "Boss spawn" << std::endl;
         _alive = true;
         _last_spawn = _crt_time;
@@ -73,14 +73,14 @@ void Boss::update(float dt) {
     _position.x += _speed.x * dt;
     _position.y += _speed.y * dt;
    
-    if(_position.x < 500) {
+    if(_position.x < 600) {
         _speed.x = 0;        
-        _speed.y = 100;    
+        _speed.y = 1;    
     }
-    if (_position.y > 450 && _speed.y > 0) { 
+    if (_position.y > 300 && _speed.y > 0) { 
         _speed.reflectY();
     }
-    if (_position.y < 150 && _speed.y < 0) { 
+    if (_position.y < 300 && _speed.y < 0) { 
         _speed.reflectY();
     }
 }
