@@ -33,14 +33,10 @@ void Boss::bossLoop() {
 
     float _crt_time = al_current_time();
     
-    if (_crt_time - _last_spawn > 0) {
-        _alive = true;
+    if (_crt_time - _last_spawn > 60) {
+        spawn();
         _last_spawn = _crt_time;
     }
-
-    if (on_screen())
-        selectbossAnimation();
-    
     Thread::yield();
 }
 
@@ -79,4 +75,10 @@ void Boss::update(float dt) {
     if (_position.y < 150 && _speed.y < 0) { 
         _speed.reflectY();
     }
+}
+
+void Boss::spawn() {
+    std::cout << "Boss spawn" << std::endl;
+    _alive = true;
+    selectbossAnimation();
 }

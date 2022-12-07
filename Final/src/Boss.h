@@ -41,6 +41,7 @@ public:
     inline int get_row() const { return _row; };
     inline int get_col() const { return _col; };
     void update(float dt);
+    void spawn();
 
 private:
     void bossLoop();
