@@ -17,13 +17,28 @@ Ship::Ship(Point centre, ALLEGRO_COLOR color, EventHandler *event_handler, std::
     _finish = false;
     _lasers = lasers;
     _last_shot = 0;
+    _health = 3;
+    _size = 10;
+    _last_hurt = 0;
+}
+void Ship::get_hurt(float crt_time)
+{
+    if (crt_time - _last_hurt > 3)
+    {
+        _health -= 1;
+        _last_hurt = crt_time;
+    }
+    if (_health == 0)
+    {
+        _finish = true;
+    }
 }
 void Ship::createLaser()
 {
     float crt_time = al_current_time();
     if (crt_time - _last_shot > 0.5)
     {
-        _lasers->push_back(Laser(_centre + Vector(1000, 0) * 0.05, al_map_rgb(255, 0, 0), Vector(1000, 0)));
+        _lasers->push_back(Laser(_centre + Vector(1000, 0) * 0.05, al_map_rgb(0, 0, 255), Vector(1000, 0)));
         _last_shot = crt_time;
     }
 }

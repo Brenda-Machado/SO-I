@@ -39,6 +39,7 @@ void GameController::run()
         update_lasers(_enemy_lasers);
         check_enemy_collisions();
         check_mine_collisions();
+        check_player_collisions();
         _last_update = _crt_time;
         Thread::yield();
     }
@@ -116,4 +117,18 @@ bool GameController::mine_has_colided(Mine mine)
         }
     }
     return false;
+}
+
+void GameController::check_player_collisions()
+{
+    for (auto laser = _enemy_lasers->begin(); laser != _enemy_lasers->end();)
+    {
+        if (collision_happened(laser->centre, _ship->get_centre(), _ship->get_size()))
+        {
+            laser = _enemy_lasers->erase(laser);
+            _ship->get_hurt(_crt_time);
+        }
+        else
+            laser++;
+    }
 }

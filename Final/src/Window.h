@@ -23,6 +23,7 @@
 #include "Mine.h"
 #include "EnemyController.h"
 #include "GameController.h"
+#include "Sniper.h"
 
 #include <list>
 __USING_API
@@ -104,6 +105,8 @@ private:
    Thread *_controller_thread;
 
    Thread *_game_controller_thread;
+
+   Thread *_sniper_thread;
 };
 
 #endif

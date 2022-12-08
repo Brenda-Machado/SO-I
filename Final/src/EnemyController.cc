@@ -33,7 +33,7 @@ void EnemyController::run()
         last_updated = _crt_time;
         if (_crt_time - _last_spawn > 1)
         { // 15 segundos
-            spawn_enemies();
+            // spawn_enemies();
             _last_spawn = _crt_time;
         }
 

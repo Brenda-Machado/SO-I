@@ -2,8 +2,6 @@
 
 Enemy::Enemy(Point _pos, Vector _spe, std::list<Laser> *lasers)
 {
-    _hp = 1;
-    _damage = 1;
     _row = 0;
     _col = 0;
     _size = 30;
@@ -33,8 +31,11 @@ bool Enemy::on_screen()
 
 void Enemy::shoot()
 {
+    std::cout << "enemy shooted\n";
     Laser laser1 = Laser(_position, al_map_rgb(255, 0, 255), Vector(-420, -420));
     Laser laser2 = Laser(_position, al_map_rgb(255, 0, 255), Vector(-420, 420));
+    Laser laser3 = Laser(_position, al_map_rgb(255, 0, 255), Vector(-600, 0));
     _lasers->push_back(laser1);
     _lasers->push_back(laser2);
+    _lasers->push_back(laser3);
 }

@@ -45,6 +45,7 @@ private:
     void update_lasers(std::list<Laser> *lasers);
     void check_enemy_collisions();
     void check_mine_collisions();
+    void check_player_collisions();
     bool collision_happened(Point src, Point trgt, int size);
     bool enemy_has_colided(Enemy enemy);
     bool mine_has_colided(Mine mine);

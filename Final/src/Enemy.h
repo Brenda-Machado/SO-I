@@ -22,29 +22,26 @@ class Enemy
 {
 public:
     Enemy(Point _pos, Vector _spe, std::list<Laser> *lasers);
+    Enemy(){};
     bool in_bound();
     bool on_screen();
     ~Enemy(){};
-    void shoot();
+    virtual void shoot();
 
     Point getPosition() { return _position; };
     void setPosition(Point position) { _position = position; };
     void kill() { _alive = false; };
     Vector getSpeed() { return _speed; };
-    int getHp() { return _hp; };
-    int getDamage() { return _damage; };
     bool isAlive() { return _alive; };
     inline int get_row() const { return _row; };
     inline int get_col() const { return _col; };
     int get_size() const { return _size; };
 
-private:
+protected:
     Point _position; // center of the enemy
     Vector _speed;
-    int _hp;
     int _row;
     int _col;
-    int _damage;
     bool _alive;
     int _size;
     std::list<Laser> *_lasers;

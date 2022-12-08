@@ -60,6 +60,7 @@ void Window::init()
    _ship_thread = new Thread(Ship::start, _ship);
    _mine_thread = new Thread(Mine::start, &_mines, &_enemy_lasers);
    _controller_thread = new Thread(EnemyController::start, _enemy_controller);
+   _sniper_thread = new Thread(Sniper::start_controller, &_enemy_lasers, &_control_enemies, _ship);
    _game_controller_thread = new Thread(GameController::start,
                                         _ship,
                                         &_enemy_lasers,
@@ -77,6 +78,10 @@ void Window::run()
    {
       gameLoop(prevTime);
    }
+
+   Sniper::end();
+   _sniper_thread->join();
+   delete _sniper_thread;
 
    Mine::end();
    _mine_thread->join();
@@ -157,7 +162,10 @@ void Window::update(double dt)
 void Window::draw()
 {
    drawBackground();
-   drawShip(_ship->sprite, 0);
+   if (!_ship->get_end())
+   {
+      drawShip(_ship->sprite, 0);
+   }
 
    for (auto iter = _player_lasers.begin(); iter != _player_lasers.end(); iter++)
    {
