@@ -9,8 +9,8 @@ Thread *Thread::_running = nullptr;
 Thread Thread::_main = Thread();
 CPU::Context Thread::_main_context = CPU::Context();
 Thread Thread::_dispatcher = Thread();
-Ordered_List<Thread> Thread::_ready;
-Ordered_List<Thread> Thread::_suspended;
+Ordered_List<Thread> Thread::_ready = Ordered_List<Thread>();
+Ordered_List<Thread> Thread::_suspended = Ordered_List<Thread>();
 
 /*
  * Retorna o ID da thread.
