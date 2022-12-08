@@ -6,9 +6,9 @@ __BEGIN_API
 
 int Thread::_last_id = 0;
 Thread *Thread::_running = nullptr;
-Thread Thread::_main;
-CPU::Context Thread::_main_context;
-Thread Thread::_dispatcher;
+Thread Thread::_main = Thread();
+CPU::Context Thread::_main_context = CPU::Context();
+Thread Thread::_dispatcher = Thread();
 Ordered_List<Thread> Thread::_ready;
 Ordered_List<Thread> Thread::_suspended;
 
@@ -76,7 +76,7 @@ void Thread::thread_exit(int exit_code)
 void Thread::dispatcher()
 {
 	db<Thread>(TRC) << "Thread::dispatcher()\n";
-	while (_ready.size() > 1 || _ready.head()->object() != &_main)
+	while (_ready.size() > 0)
 	{
 		Thread *next = _ready.head()->object();
 		_ready.remove_head();
@@ -98,8 +98,8 @@ void Thread::dispatcher()
 		}
 	}
 	std::cout << "ending dispatcher" << std::endl;
-	_dispatcher._state = FINISHING;
-	switch_context(&_dispatcher, &_main);
+	// _dispatcher._state = FINISHING;
+	// switch_context(&_dispatcher, &_main);
 	// CPU::switch_context(_dispatcher.context(), &_main_context);
 }
 
@@ -113,8 +113,7 @@ void Thread::init(void (*main)(void *))
 	db<Thread>(TRC) << "Thread::init()\n";
 	std::string nome = "main";
 	new (&_main) Thread((void (*)(char *))main, (char *)nome.data());
-	_main_context = CPU::Context();
-	_main_context.save();
+	new (&_main_context) CPU::Context();
 	new (&_dispatcher) Thread(Thread::dispatcher);
 
 	_running = &_main;
@@ -160,7 +159,10 @@ Thread::~Thread()
 {
 	db<Thread>(TRC) << "Thread::~Thread()\n";
 	std::cout << "~Thread" << std::endl;
-	delete _context;
+	if (_context != _main.context())
+	{
+		delete _context;
+	}
 	std::cout << "~Thread completed" << std::endl;
 }
 
