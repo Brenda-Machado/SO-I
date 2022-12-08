@@ -159,10 +159,7 @@ Thread::~Thread()
 {
 	db<Thread>(TRC) << "Thread::~Thread()\n";
 	std::cout << "~Thread" << std::endl;
-	if (_context != _main.context())
-	{
-		delete _context;
-	}
+	delete _context;
 	std::cout << "~Thread completed" << std::endl;
 }
 
