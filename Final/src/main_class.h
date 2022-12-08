@@ -36,7 +36,6 @@ public:
         delete window;
         delete window_thread;
 
-        start_allegro(800, 600, 60);
         if (_timer != NULL)
         {
             std::cout << "destroying timer" << std::endl;

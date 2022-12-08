@@ -99,7 +99,7 @@ void Thread::dispatcher()
 	}
 	std::cout << "ending dispatcher" << std::endl;
 	// _dispatcher._state = FINISHING;
-	// switch_context(&_dispatcher, &_main);
+	switch_context(&_dispatcher, &_main);
 	// CPU::switch_context(_dispatcher.context(), &_main_context);
 }
 
