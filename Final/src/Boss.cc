@@ -8,7 +8,7 @@
 
 __USING_API
 
-Boss::Boss(Point _pos, Vector _spe,  ALLEGRO_COLOR c, std::list<Laser> *lasers) {
+Boss::Boss(Point _pos, Vector _spe,  ALLEGRO_COLOR c, std::list<Laser> *lasers, std::list<Missile> *missiles) {
     _position = _pos;
     _speed = _spe;
     _finish = false;
@@ -18,6 +18,7 @@ Boss::Boss(Point _pos, Vector _spe,  ALLEGRO_COLOR c, std::list<Laser> *lasers) 
     _row = 0;
     _col = 0;
     _lasers = lasers;
+    _missiles = missiles;
 }
 
 void Boss::start(Boss *Boss) {
@@ -37,7 +38,7 @@ void Boss::bossLoop() {
 
     float _crt_time = al_current_time();
     
-    if (_crt_time - _last_spawn > 60) {
+    if (_crt_time - _last_spawn > 6) {
         std::cout << "Boss spawn" << std::endl;
         _alive = true;
         _last_spawn = _crt_time;
@@ -45,8 +46,11 @@ void Boss::bossLoop() {
     if (_alive) {
         update(_crt_time - _prev_time);
         selectbossAnimation();
-        if (_crt_time - _prev_time > 5 && _position.x < 600) {
-            shoot();  
+        // if (_crt_time - _prev_time > 5 && _position.x < 600) {
+        //     shoot();  
+        // }
+        if (_crt_time - _prev_time > 10) {
+            missile_atack();
         }
     }
     _prev_time = _crt_time;
@@ -105,6 +109,13 @@ void Boss::shoot() {
     _lasers->push_back(laser5); 
 }
 
+void Boss::missile_atack() {
+
+    Missile missile1 = Missile(_position, Vector(-20, 0));
+    Missile missile2 = Missile(_position, Vector(-20, 0));
+    _missiles->push_back(missile1);
+    _missiles->push_back(missile2);
+}
 void Boss::hit() {
     _hp -= -1;
     if (_hp <= 0) {

@@ -186,6 +186,10 @@ void Window::draw()
    {
       drawLaser(*iter);
    }
+   for (auto iter = _missiles.begin(); iter != _missiles.end(); iter++)
+   {
+      drawMissile(*iter);
+   }
 
    for (auto iter = _mines.begin(); iter != _mines.end(); iter++)
    {
@@ -218,11 +222,15 @@ void Window::drawBoss(std::shared_ptr<Sprite> sprite, int flags)
 {
    sprite->draw_boss(_boss->get_row(), _boss->get_col(), 200, 200, _boss->getPosition(), flags);
 }
+void Window::drawMissile(Missile missile)
+{
+   _missile_frames[missile.an_frm]->draw_rotated(missile._position, missile._angle, 0);
+}
 void Window::loadSprites()
 {
    // Create Ship
    _ship = new Ship(Point(215, 245), al_map_rgb(0, 200, 0), _event_handler, &_player_lasers);
-   _boss = new Boss(Point(810, 300), Vector(-5,0), al_map_rgb(155, 0, 0), &_boss_lasers);
+   _boss = new Boss(Point(810, 300), Vector(-5,0), al_map_rgb(155, 0, 0), &_boss_lasers, &_missiles);
 
    // represents the middle of the image width-wise, and top height-wise
    bgMid = Point(0, 0);

@@ -13,6 +13,7 @@
 #include "Point.h"
 #include "Laser.h"
 #include "thread.h"
+#include "Missile.h"
 
 #include <list>
 
@@ -20,7 +21,7 @@ class Boss
 {
 
 public:
-    Boss (Point _pos, Vector _spe, ALLEGRO_COLOR c, std::list<Laser> *lasers);
+    Boss (Point _pos, Vector _spe, ALLEGRO_COLOR c, std::list<Laser> *lasers, std::list<Missile> *missiles);
     ~Boss() {};
     std::shared_ptr<Sprite> _sprite;
     static void start(Boss *Boss);
@@ -32,6 +33,7 @@ public:
     }
     bool on_screen();
     void shoot();
+    void missile_atack();
     void hit();
     Point getPosition() { return _position; };
     void setPosition(Point position) { _position = position; };
@@ -61,6 +63,7 @@ private:
     bool _alive;
     bool _finish;
     std::list<Laser> *_lasers;
+    std::list<Missile> *_missiles;
 
 };
 

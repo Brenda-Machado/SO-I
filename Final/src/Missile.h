@@ -27,11 +27,12 @@ public:
     void update_pos(float dt);
     bool in_bound();
 
-private:
+public:
     Point _position;
     Vector _speed;
     int an_frm; // animation frame
     bool active;
+    float _angle;
 };
 
 #endif

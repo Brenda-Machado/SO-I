@@ -67,6 +67,7 @@ private:
    void drawLaser(Laser laser);
    void drawEnemy(Enemy *enemy);
    void drawBoss(std::shared_ptr<Sprite> sprite, int flags);
+   void drawMissile(Missile missile);
    // Background
    Point bgMid; /**<point used by the background to draw from */
    Point fgMid;

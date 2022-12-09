@@ -135,15 +135,15 @@ void GameController::check_boss_collisions()
 {
     if (_boss->isAlive())
     {
-        for (auto laser = _player_lasers->begin(); laser != _player_lasers->end(); laser++)
-        {
-            if (collision_happened(laser->centre, _boss->getPosition(), 200))
-            {
-                _player_lasers->erase(laser);
-                _boss->hit();
-                return;
-            }
-        }
+        // for (auto laser = _player_lasers->begin(); laser != _player_lasers->end(); laser++)
+        // {
+        //     if (collision_happened(laser->centre, _boss->getPosition(), 200))
+        //     {
+        //         _player_lasers->erase(laser);
+        //         _boss->hit();
+        //         return;
+        //     }
+        // }
         // for (auto laser = _boss_lasers->begin(); laser != _boss_lasers->end(); laser++)
         // {
         //     if (collision_happened(laser->centre, _ship->getPosition(), _ship->get_size()))
@@ -158,5 +158,16 @@ void GameController::check_boss_collisions()
 
 void GameController::update_missiles(std::list<Missile> *missiles)
 {
-//
+    for (auto missile = missiles->begin(); missile != missiles->end();)
+    {   
+        missile->update_pos(_crt_time - _last_update);
+        if (!missile->in_bound())
+        {
+            missile = missiles->erase(missile);
+        }
+        else
+        {   
+            missile++;
+        }
+    }
 }
