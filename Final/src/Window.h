@@ -88,6 +88,7 @@ private:
    std::list<Laser> _enemy_lasers;
    std::list<Enemy> _control_enemies;
    std::list<Laser> _boss_lasers;
+   std::list<Missile> _missiles;
    
    // missile frames
    std::vector< std::shared_ptr<Sprite> > _missile_frames;

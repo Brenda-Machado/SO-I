@@ -69,7 +69,8 @@ void Window::init()
                                         &_mines,
                                         &_control_enemies,
                                         _boss,
-                                        &_boss_lasers);
+                                        &_boss_lasers,
+                                        &_missiles);
 }
 
 // repeatedly call the state manager function until the _state is EXIT
@@ -238,6 +239,7 @@ void Window::loadSprites()
    // sprites
    _ship->sprite = std::make_shared<Sprite>("Sprite2.png"); // espaçonave do usuário
    bg = std::make_shared<Sprite>("BGstars.png");            // fundo da tela - background
+
    // explosion = std::make_shared<Sprite>("explode.png");
    spikeBomb = std::make_shared<Sprite>("spikebomb.png");
 
@@ -253,6 +255,7 @@ void Window::loadSprites()
    _missile_frames.push_back(std::make_shared<Sprite> ("m6.png"));
    _missile_frames.push_back(std::make_shared<Sprite> ("m7.png"));
    _missile_frames.push_back(std::make_shared<Sprite> ("m8.png"));
+
    // delete path;
    al_destroy_path(path);
 }

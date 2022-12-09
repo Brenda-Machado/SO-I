@@ -7,7 +7,8 @@ GameController::GameController(Ship *ship,
                                std::list<Laser> *player_lasers,
                                std::list<Mine> *mines,
                                std::list<Enemy> *enemies,
-                               Boss *boss, std::list<Laser> *boss_lasers)
+                               Boss *boss, std::list<Laser> *boss_lasers,
+                               std::list<Missile> *missiles)
 {
     _enemy_lasers = enemy_lasers;
     _player_lasers = player_lasers;
@@ -18,13 +19,15 @@ GameController::GameController(Ship *ship,
     _crt_time = al_get_time();
     _boss = boss;
     _boss_lasers = boss_lasers;
+    _missiles = missiles;
 }
 
 void GameController::start(Ship *ship, std::list<Laser> *enemy_lasers,
                            std::list<Laser> *player_lasers,
                            std::list<Mine> *mines,
                            std::list<Enemy> *enemies,
-                           Boss *boss, std::list<Laser> *boss_lasers)
+                           Boss *boss, std::list<Laser> *boss_lasers,
+                           std::list<Missile> *missiles)
 {
     GameController controller = GameController(ship,
                                                enemy_lasers,
@@ -32,7 +35,8 @@ void GameController::start(Ship *ship, std::list<Laser> *enemy_lasers,
                                                mines,
                                                enemies, 
                                                boss, 
-                                               boss_lasers);
+                                               boss_lasers,
+                                               missiles);
     controller.run();
     Thread::exit_running(9);
 }
@@ -44,6 +48,7 @@ void GameController::run()
         update_lasers(_player_lasers);
         update_lasers(_enemy_lasers);
         update_lasers(_boss_lasers);
+        update_missiles(_missiles);
         check_enemy_collisions();
         check_mine_collisions();
         check_boss_collisions();
@@ -149,4 +154,9 @@ void GameController::check_boss_collisions()
         //     }
         // }
     }
+}
+
+void GameController::update_missiles(std::list<Missile> *missiles)
+{
+//
 }
