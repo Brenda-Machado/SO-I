@@ -57,6 +57,7 @@ private:
     int _row;
     int _col;
     bool _finish;
+    int _vel;
     EventHandler *_event_handler;
 
     float _prev_time;

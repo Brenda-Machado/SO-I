@@ -29,7 +29,7 @@ __USING_API
 class EnemyController
 {
 public:
-    EnemyController(std::list<Enemy> *enemies, std::list<Laser> *lasers);
+    EnemyController(std::list<Enemy *> *enemies, std::list<Laser> *lasers);
     ~EnemyController(){};
     static void start(EnemyController *enemy_controller);
     void run();
@@ -45,7 +45,7 @@ public:
 private:
     bool game_over;
     std::list<Laser> *_lasers;
-    std::list<Enemy> *_enemies;
+    std::list<Enemy *> *_enemies;
     float _last_spawn;
     float _last_shot;
     float _crt_time;

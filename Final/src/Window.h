@@ -83,7 +83,7 @@ private:
    std::list<Laser> _player_lasers;
    std::list<Mine> _mines;
    std::list<Laser> _enemy_lasers;
-   std::list<Enemy> _control_enemies;
+   std::list<Enemy *> _control_enemies;
 
    // allegro objects
    ALLEGRO_TIMER *_timer;

@@ -102,6 +102,12 @@ void Window::run()
    GameController::end();
    _game_controller_thread->join();
    delete _game_controller_thread;
+   // deletando todos os inimigos
+   for (auto iter = _control_enemies.begin(); iter != _control_enemies.end();)
+   {
+      delete *iter;
+      iter = _control_enemies.erase(iter);
+   }
 }
 
 void Window::gameLoop(float &prevTime)
@@ -184,7 +190,7 @@ void Window::draw()
    std::cout << "number of enemies = " << _control_enemies.size() << std::endl;
    for (auto iter = _control_enemies.begin(); iter != _control_enemies.end(); iter++)
    {
-      drawEnemy(&(*iter));
+      drawEnemy(*iter);
    }
 }
 
@@ -202,7 +208,7 @@ void Window::drawBackground()
 }
 void Window::drawEnemy(Enemy *enem)
 {
-   enemy->draw_region(enem->get_row(), enem->get_col(), 47.0, 40.0, enem->getPosition(), 0);
+   enemy->draw_region(enem->get_row(), enem->get_col(), 47.0, 47.0, enem->getPosition(), 0);
 }
 void Window::loadSprites()
 {

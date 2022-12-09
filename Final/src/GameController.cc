@@ -6,7 +6,7 @@ GameController::GameController(Ship *ship,
                                std::list<Laser> *enemy_lasers,
                                std::list<Laser> *player_lasers,
                                std::list<Mine> *mines,
-                               std::list<Enemy> *enemies)
+                               std::list<Enemy *> *enemies)
 {
     _enemy_lasers = enemy_lasers;
     _player_lasers = player_lasers;
@@ -20,7 +20,7 @@ GameController::GameController(Ship *ship,
 void GameController::start(Ship *ship, std::list<Laser> *enemy_lasers,
                            std::list<Laser> *player_lasers,
                            std::list<Mine> *mines,
-                           std::list<Enemy> *enemies)
+                           std::list<Enemy *> *enemies)
 {
     GameController controller = GameController(ship,
                                                enemy_lasers,
@@ -40,6 +40,8 @@ void GameController::run()
         check_enemy_collisions();
         check_mine_collisions();
         check_player_collisions();
+        check_ship_enemy_collisions();
+        check_ship_mine_collisions();
         _last_update = _crt_time;
         Thread::yield();
     }
@@ -72,6 +74,7 @@ void GameController::check_enemy_collisions()
     {
         if (enemy_has_colided(*enemy))
         {
+            delete *enemy;
             enemy = _enemies->erase(enemy);
         }
         else
@@ -80,11 +83,11 @@ void GameController::check_enemy_collisions()
         }
     }
 }
-bool GameController::enemy_has_colided(Enemy enemy)
+bool GameController::enemy_has_colided(Enemy *enemy)
 {
     for (auto laser = _player_lasers->begin(); laser != _player_lasers->end(); laser++)
     {
-        if (collision_happened(laser->centre, enemy.getPosition(), enemy.get_size()))
+        if (collision_happened(laser->centre, enemy->getPosition(), enemy->get_size()))
         {
             _player_lasers->erase(laser);
             return true;
@@ -130,5 +133,38 @@ void GameController::check_player_collisions()
         }
         else
             laser++;
+    }
+}
+void GameController::check_ship_enemy_collisions()
+{
+    for (auto enemy = _enemies->begin(); enemy != _enemies->end();)
+    {
+        if (collision_happened(_ship->get_centre(),
+                               (*enemy)->getPosition(),
+                               _ship->get_size() + (*enemy)->get_size()))
+        {
+            _ship->get_hurt(_crt_time);
+            delete *enemy;
+            enemy = _enemies->erase(enemy);
+        }
+        else
+            enemy++;
+    }
+}
+
+void GameController::check_ship_mine_collisions()
+{
+
+    for (auto enemy = _mines->begin(); enemy != _mines->end();)
+    {
+        if (collision_happened(_ship->get_centre(),
+                               enemy->centre,
+                               _ship->get_size() + enemy->size))
+        {
+            _ship->get_hurt(_crt_time);
+            enemy = _mines->erase(enemy);
+        }
+        else
+            enemy++;
     }
 }

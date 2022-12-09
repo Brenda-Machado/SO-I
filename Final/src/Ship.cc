@@ -20,10 +20,11 @@ Ship::Ship(Point centre, ALLEGRO_COLOR color, EventHandler *event_handler, std::
     _health = 3;
     _size = 10;
     _last_hurt = 0;
+    _vel = 350;
 }
 void Ship::get_hurt(float crt_time)
 {
-    if (crt_time - _last_hurt > 3)
+    if (crt_time - _last_hurt > 1)
     {
         _health -= 1;
         _last_hurt = crt_time;
@@ -81,22 +82,22 @@ void Ship::setSpeed()
 
     if (_event_handler->get_pressed_keys(act::action::MOVE_UP))
     {
-        _speed.y -= 250;
+        _speed.y -= _vel;
         std::cout << "u";
     }
     if (_event_handler->get_pressed_keys(act::action::MOVE_RIGHT))
     {
-        _speed.x += 250;
+        _speed.x += _vel;
         std::cout << "r";
     }
     if (_event_handler->get_pressed_keys(act::action::MOVE_DOWN))
     {
-        _speed.y += 250;
+        _speed.y += _vel;
         std::cout << "d";
     }
     if (_event_handler->get_pressed_keys(act::action::MOVE_LEFT))
     {
-        _speed.x -= 250;
+        _speed.x -= _vel;
         std::cout << "l";
     }
     if (_event_handler->get_pressed_keys(act::action::FIRE_SECONDARY))
