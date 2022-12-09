@@ -10,7 +10,7 @@ void Mine::start(std::list<Mine> *mines, std::list<Laser> *lasers)
     {
         std::cout << "mine loop" << std::endl;
         float crt_time = al_get_time();
-        if (crt_time - last_spawned > 1)
+        if (crt_time - last_spawned > 30)
         {
             std::cout << "spawned mine" << std::endl;
             mines->push_back(Mine(Point(850, 300), Vector(-50, 0), lasers));

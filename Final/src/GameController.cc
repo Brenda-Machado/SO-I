@@ -6,7 +6,8 @@ GameController::GameController(Ship *ship,
                                std::list<Laser> *enemy_lasers,
                                std::list<Laser> *player_lasers,
                                std::list<Mine> *mines,
-                               std::list<Enemy> *enemies)
+                               std::list<Enemy> *enemies,
+                               Boss *boss, std::list<Laser> *boss_lasers)
 {
     _enemy_lasers = enemy_lasers;
     _player_lasers = player_lasers;
@@ -15,18 +16,23 @@ GameController::GameController(Ship *ship,
     _enemies = enemies;
     _last_update = 0;
     _crt_time = al_get_time();
+    _boss = boss;
+    _boss_lasers = boss_lasers;
 }
 
 void GameController::start(Ship *ship, std::list<Laser> *enemy_lasers,
                            std::list<Laser> *player_lasers,
                            std::list<Mine> *mines,
-                           std::list<Enemy> *enemies)
+                           std::list<Enemy> *enemies,
+                           Boss *boss, std::list<Laser> *boss_lasers)
 {
     GameController controller = GameController(ship,
                                                enemy_lasers,
                                                player_lasers,
                                                mines,
-                                               enemies);
+                                               enemies, 
+                                               boss, 
+                                               boss_lasers);
     controller.run();
     Thread::exit_running(9);
 }
@@ -37,8 +43,10 @@ void GameController::run()
         _crt_time = al_get_time();
         update_lasers(_player_lasers);
         update_lasers(_enemy_lasers);
+        update_lasers(_boss_lasers);
         check_enemy_collisions();
         check_mine_collisions();
+        check_boss_collisions();
         _last_update = _crt_time;
         Thread::yield();
     }
@@ -116,4 +124,29 @@ bool GameController::mine_has_colided(Mine mine)
         }
     }
     return false;
+}
+
+void GameController::check_boss_collisions()
+{
+    if (_boss->isAlive())
+    {
+        for (auto laser = _player_lasers->begin(); laser != _player_lasers->end(); laser++)
+        {
+            if (collision_happened(laser->centre, _boss->getPosition(), 200))
+            {
+                _player_lasers->erase(laser);
+                _boss->hit();
+                return;
+            }
+        }
+        // for (auto laser = _boss_lasers->begin(); laser != _boss_lasers->end(); laser++)
+        // {
+        //     if (collision_happened(laser->centre, _ship->getPosition(), _ship->get_size()))
+        //     {
+        //         _boss_lasers->erase(laser);
+        //         // _ship->hit();
+        //         return;
+        //     }
+        // }
+    }
 }
