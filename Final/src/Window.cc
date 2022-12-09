@@ -241,8 +241,6 @@ void Window::loadSprites()
    // explosion = std::make_shared<Sprite>("explode.png");
    spikeBomb = std::make_shared<Sprite>("spikebomb.png");
 
-   // _ship->sprite = std::make_shared<Sprite>("/home/joao/Projects/UFSC/SO1/Final/src/resources/Sprite2.png"); // espaçonave do usuário
-   // bg = std::make_shared<Sprite>("/home/joao/Projects/UFSC/SO1/Final/src/resources/BGstars.png");            // fundo da tela - background
    enemy = std::make_shared<Sprite>("EnemyBasic.png"); // inimigo
    _boss->_sprite = std::make_shared<Sprite>("bossv2.png");
 
