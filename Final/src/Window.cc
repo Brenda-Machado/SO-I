@@ -245,6 +245,16 @@ void Window::loadSprites()
    // bg = std::make_shared<Sprite>("/home/joao/Projects/UFSC/SO1/Final/src/resources/BGstars.png");            // fundo da tela - background
    enemy = std::make_shared<Sprite>("EnemyBasic.png"); // inimigo
    _boss->_sprite = std::make_shared<Sprite>("bossv2.png");
+
+   // missile frames
+   _missile_frames.push_back(std::make_shared<Sprite> ("m1.png"));
+   _missile_frames.push_back(std::make_shared<Sprite> ("m2.png"));
+   _missile_frames.push_back(std::make_shared<Sprite> ("m3.png"));
+   _missile_frames.push_back(std::make_shared<Sprite> ("m4.png"));
+   _missile_frames.push_back(std::make_shared<Sprite> ("m5.png"));
+   _missile_frames.push_back(std::make_shared<Sprite> ("m6.png"));
+   _missile_frames.push_back(std::make_shared<Sprite> ("m7.png"));
+   _missile_frames.push_back(std::make_shared<Sprite> ("m8.png"));
    // delete path;
    al_destroy_path(path);
 }

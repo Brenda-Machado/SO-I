@@ -30,6 +30,7 @@ public:
 private:
     Point _position;
     Vector _speed;
+    int an_frm; // animation frame
     bool active;
 };
 

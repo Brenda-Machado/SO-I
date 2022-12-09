@@ -26,6 +26,8 @@
 #include "Boss.h"
 
 #include <list>
+#include <vector>
+
 __USING_API
 // forward declarations
 class Menu;
@@ -86,6 +88,9 @@ private:
    std::list<Laser> _enemy_lasers;
    std::list<Enemy> _control_enemies;
    std::list<Laser> _boss_lasers;
+   
+   // missile frames
+   std::vector< std::shared_ptr<Sprite> > _missile_frames;
 
    // allegro objects
    ALLEGRO_TIMER *_timer;

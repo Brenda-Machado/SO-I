@@ -7,6 +7,7 @@ Missile::Missile(Point pos, Vector spe)
     _position = pos;
     _speed = spe;
     active = true;
+    an_frm = 0;
 }
 void Missile::update_pos(float dt)
 {
