@@ -116,7 +116,8 @@ void GameController::check_mine_collisions()
     for (auto enemy = _mines->begin(); enemy != _mines->end();)
     {
         if (mine_has_colided(*enemy))
-        {
+        {   
+            _explosions->push_back(Explosion((*enemy).getCentre(), 0));
             enemy = _mines->erase(enemy);
         }
         else

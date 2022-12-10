@@ -28,6 +28,7 @@ public:
     void explode();
     static void start(std::list<Mine> *mines, std::list<Laser> *lasers);
     static void end();
+    Point getCentre() { return centre; };
 
 public:
     Point centre;
