@@ -44,6 +44,7 @@ Window::~Window()
    delete _event_handler;
    delete _ship;
    delete _enemy_controller;
+   delete _boss;
 }
 
 // initialize Allegro, the _display window, the addons, the timers, and event
@@ -59,6 +60,7 @@ void Window::init()
    _event_thread = new Thread(EventHandler::start, _event_handler);
    _ship_thread = new Thread(Ship::start, _ship);
    _mine_thread = new Thread(Mine::start, &_mines, &_enemy_lasers);
+   _boss_thread = new Thread(Boss::start, _boss);
    _controller_thread = new Thread(EnemyController::start, _enemy_controller);
    _sniper_thread = new Thread(Sniper::start_controller, &_enemy_lasers, &_control_enemies, _ship);
    _game_controller_thread = new Thread(GameController::start,
@@ -66,7 +68,10 @@ void Window::init()
                                         &_enemy_lasers,
                                         &_player_lasers,
                                         &_mines,
-                                        &_control_enemies);
+                                        &_control_enemies,
+                                        _boss,
+                                        &_boss_lasers,
+                                        &_missiles);
 }
 
 // repeatedly call the state manager function until the _state is EXIT
@@ -102,6 +107,10 @@ void Window::run()
    GameController::end();
    _game_controller_thread->join();
    delete _game_controller_thread;
+
+   _boss->end();
+   _boss_thread->join();
+   delete _boss_thread;
    // deletando todos os inimigos
    for (auto iter = _control_enemies.begin(); iter != _control_enemies.end();)
    {
@@ -173,6 +182,11 @@ void Window::draw()
       drawShip(_ship->sprite, 0);
    }
 
+   if (_boss->isAlive())
+   {
+      drawBoss(_boss->_sprite, 0);
+   }
+
    for (auto iter = _player_lasers.begin(); iter != _player_lasers.end(); iter++)
    {
       drawLaser(*iter);
@@ -181,6 +195,15 @@ void Window::draw()
    for (auto iter = _enemy_lasers.begin(); iter != _enemy_lasers.end(); iter++)
    {
       drawLaser(*iter);
+   }
+
+   for (auto iter = _boss_lasers.begin(); iter != _boss_lasers.end(); iter++)
+   {
+      drawLaser(*iter);
+   }
+   for (auto iter = _missiles.begin(); iter != _missiles.end(); iter++)
+   {
+      drawMissile(*iter);
    }
 
    for (auto iter = _mines.begin(); iter != _mines.end(); iter++)
@@ -210,10 +233,19 @@ void Window::drawEnemy(Enemy *enem)
 {
    enemy->draw_region(enem->get_row(), enem->get_col(), 47.0, 47.0, enem->getPosition(), 0);
 }
+void Window::drawBoss(std::shared_ptr<Sprite> sprite, int flags)
+{
+   sprite->draw_boss(_boss->get_row(), _boss->get_col(), 200, 200, _boss->getPosition(), flags);
+}
+void Window::drawMissile(Missile missile)
+{
+   _missile_frames[missile.an_frm]->draw_rotated(missile._position, missile._angle, 0);
+}
 void Window::loadSprites()
 {
    // Create Ship
    _ship = new Ship(Point(215, 245), al_map_rgb(0, 200, 0), _event_handler, &_player_lasers);
+   _boss = new Boss(Point(810, 300), Vector(-5, 0), al_map_rgb(155, 0, 0), &_boss_lasers, &_missiles);
 
    // represents the middle of the image width-wise, and top height-wise
    bgMid = Point(0, 0);
@@ -230,12 +262,23 @@ void Window::loadSprites()
    // sprites
    _ship->sprite = std::make_shared<Sprite>("Sprite2.png"); // espaçonave do usuário
    bg = std::make_shared<Sprite>("BGstars.png");            // fundo da tela - background
+
    // explosion = std::make_shared<Sprite>("explode.png");
    spikeBomb = std::make_shared<Sprite>("spikebomb.png");
 
-   // _ship->sprite = std::make_shared<Sprite>("/home/joao/Projects/UFSC/SO1/Final/src/resources/Sprite2.png"); // espaçonave do usuário
-   // bg = std::make_shared<Sprite>("/home/joao/Projects/UFSC/SO1/Final/src/resources/BGstars.png");            // fundo da tela - background
    enemy = std::make_shared<Sprite>("EnemyBasic.png"); // inimigo
+   _boss->_sprite = std::make_shared<Sprite>("bossv2.png");
+
+   // missile frames
+   _missile_frames.push_back(std::make_shared<Sprite>("m1.png"));
+   _missile_frames.push_back(std::make_shared<Sprite>("m2.png"));
+   _missile_frames.push_back(std::make_shared<Sprite>("m3.png"));
+   _missile_frames.push_back(std::make_shared<Sprite>("m4.png"));
+   _missile_frames.push_back(std::make_shared<Sprite>("m5.png"));
+   _missile_frames.push_back(std::make_shared<Sprite>("m6.png"));
+   _missile_frames.push_back(std::make_shared<Sprite>("m7.png"));
+   _missile_frames.push_back(std::make_shared<Sprite>("m8.png"));
+
    // delete path;
    al_destroy_path(path);
 }
