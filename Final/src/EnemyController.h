@@ -41,7 +41,6 @@ public:
         game_over = true;
         _enemies->clear();
     };
-    // mais classes conforme necessário
 private:
     bool game_over;
     std::list<Laser> *_lasers;

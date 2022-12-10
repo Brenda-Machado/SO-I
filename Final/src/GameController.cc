@@ -8,7 +8,8 @@ GameController::GameController(Ship *ship,
                                std::list<Mine> *mines,
                                std::list<Enemy *> *enemies,
                                Boss *boss,
-                               std::list<Missile> *missiles)
+                               std::list<Missile> *missiles,
+                               std::list<Explosion> *explosions)
 {
     _enemy_lasers = enemy_lasers;
     _player_lasers = player_lasers;
@@ -19,6 +20,7 @@ GameController::GameController(Ship *ship,
     _crt_time = al_get_time();
     _boss = boss;
     _missiles = missiles;
+    _explosions = explosions;
 }
 
 void GameController::start(Ship *ship, std::list<Laser> *enemy_lasers,
@@ -26,7 +28,8 @@ void GameController::start(Ship *ship, std::list<Laser> *enemy_lasers,
                            std::list<Mine> *mines,
                            std::list<Enemy *> *enemies,
                            Boss *boss,
-                           std::list<Missile> *missiles)
+                           std::list<Missile> *missiles,
+                           std::list<Explosion> *explosions)
 {
     GameController controller = GameController(ship,
                                                enemy_lasers,
@@ -34,7 +37,8 @@ void GameController::start(Ship *ship, std::list<Laser> *enemy_lasers,
                                                mines,
                                                enemies,
                                                boss,
-                                               missiles);
+                                               missiles,
+                                               explosions);
     controller.run();
     Thread::exit_running(9);
 }
@@ -85,6 +89,7 @@ void GameController::check_enemy_collisions()
     {
         if (enemy_has_colided(*enemy))
         {
+            _explosions->push_back(Explosion((*enemy)->getPosition(), 0));
             delete *enemy;
             enemy = _enemies->erase(enemy);
         }

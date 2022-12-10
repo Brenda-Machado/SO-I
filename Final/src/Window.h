@@ -69,6 +69,7 @@ private:
    void drawEnemy(Enemy *enemy);
    void drawBoss(std::shared_ptr<Sprite> sprite, int flags);
    void drawMissile(Missile missile);
+   void drawExplosion(Explosion explosion);
    // Background
    Point bgMid; /**<point used by the background to draw from */
    Point fgMid;
@@ -78,7 +79,7 @@ private:
    std::shared_ptr<Sprite> bg; /**<shared pointer to background animation */
    std::shared_ptr<Sprite> fg;
    std::shared_ptr<Sprite> spikeBomb;
-   std::shared_ptr<Sprite> explosion;
+   std::shared_ptr<Sprite> _explosion;
    std::shared_ptr<Sprite> enemy; // enemy sprite
 
    // general game variables
@@ -90,6 +91,7 @@ private:
    std::list<Laser> _enemy_lasers;
    std::list<Enemy *> _control_enemies;
    std::list<Missile> _missiles;
+   std::list<Explosion> _explosions;
 
    // missile frames
    std::vector<std::shared_ptr<Sprite>> _missile_frames;

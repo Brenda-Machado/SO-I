@@ -39,7 +39,7 @@ Window::~Window()
 
    bg.reset();
    spikeBomb.reset();
-   explosion.reset();
+   _explosion.reset();
    _ship->sprite.reset();
    delete _event_handler;
    delete _ship;
@@ -70,7 +70,8 @@ void Window::init()
                                         &_mines,
                                         &_control_enemies,
                                         _boss,
-                                        &_missiles);
+                                        &_missiles,
+                                        &_explosions);
 }
 
 // repeatedly call the state manager function until the _state is EXIT
@@ -205,6 +206,13 @@ void Window::draw()
    {
       drawMine(spikeBomb, *iter);
    }
+   for (auto iter = _explosions.begin(); iter != _explosions.end(); iter++)
+   {
+      drawExplosion(*iter);
+      if ((*iter).isFinished())
+         iter = _explosions.erase(iter);
+      (*iter)._frame++;
+   }
    std::cout << "number of enemies = " << _control_enemies.size() << std::endl;
    for (auto iter = _control_enemies.begin(); iter != _control_enemies.end(); iter++)
    {
@@ -236,6 +244,10 @@ void Window::drawMissile(Missile missile)
 {
    _missile_frames[missile.an_frm]->draw_rotated(missile._position, missile._angle, 0);
 }
+void Window::drawExplosion(Explosion explosion)
+{
+   _explosion->draw_death_anim(explosion._frame, explosion._position, 0);
+}
 void Window::loadSprites()
 {
    // Create Ship
@@ -263,6 +275,10 @@ void Window::loadSprites()
 
    enemy = std::make_shared<Sprite>("EnemyBasic.png"); // inimigo
    _boss->_sprite = std::make_shared<Sprite>("bossv2.png");
+
+   // explosion
+   _explosion = std::make_shared<Sprite>("explode.png");
+
 
    // missile frames
    _missile_frames.push_back(std::make_shared<Sprite>("m1.png"));

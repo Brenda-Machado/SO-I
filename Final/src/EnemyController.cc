@@ -95,4 +95,3 @@ void EnemyController::check_enemies(float dt)
     _last_shot = (has_fired) ? _crt_time : _last_shot;
 }
 
-// mais metódos...

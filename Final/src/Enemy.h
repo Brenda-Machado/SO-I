@@ -38,7 +38,7 @@ public:
     int get_size() const { return _size; };
 
 protected:
-    Point _position; // center of the enemy
+    Point _position; 
     Vector _speed;
     int _row;
     int _col;

@@ -21,6 +21,7 @@
 #include "Ship.h"
 #include "Boss.h"
 #include "Missile.h"
+#include "Explosion.h"
 
 #include <list>
 
@@ -36,14 +37,16 @@ public:
                    std::list<Mine> *mines,
                    std::list<Enemy *> *ememies,
                    Boss *boss,
-                   std::list<Missile> *missiles);
+                   std::list<Missile> *missiles,
+                   std::list<Explosion> *explosions);
 
     static void start(Ship *ship, std::list<Laser> *enemy_lasers,
                       std::list<Laser> *player_lasers,
                       std::list<Mine> *mines,
                       std::list<Enemy *> *enemies,
                       Boss *boss,
-                      std::list<Missile> *missiles);
+                      std::list<Missile> *missiles,
+                      std::list<Explosion> *explosions);
     static void end() { _finish = true; };
 
 private:
@@ -69,6 +72,7 @@ private:
     std::list<Mine> *_mines;
     std::list<Enemy *> *_enemies;
     std::list<Missile> *_missiles;
+    std::list<Explosion> *_explosions;
     static bool _finish;
     float _last_update;
     float _crt_time;
