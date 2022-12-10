@@ -70,7 +70,6 @@ void Window::init()
                                         &_mines,
                                         &_control_enemies,
                                         _boss,
-                                        &_boss_lasers,
                                         &_missiles);
 }
 
@@ -197,10 +196,6 @@ void Window::draw()
       drawLaser(*iter);
    }
 
-   for (auto iter = _boss_lasers.begin(); iter != _boss_lasers.end(); iter++)
-   {
-      drawLaser(*iter);
-   }
    for (auto iter = _missiles.begin(); iter != _missiles.end(); iter++)
    {
       drawMissile(*iter);
@@ -245,7 +240,7 @@ void Window::loadSprites()
 {
    // Create Ship
    _ship = new Ship(Point(215, 245), al_map_rgb(0, 200, 0), _event_handler, &_player_lasers);
-   _boss = new Boss(Point(810, 300), Vector(-5, 0), al_map_rgb(155, 0, 0), &_boss_lasers, &_missiles);
+   _boss = new Boss(al_map_rgb(155, 0, 0), &_enemy_lasers, &_missiles);
 
    // represents the middle of the image width-wise, and top height-wise
    bgMid = Point(0, 0);

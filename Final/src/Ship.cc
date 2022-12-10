@@ -37,9 +37,10 @@ void Ship::get_hurt(float crt_time)
 void Ship::createLaser()
 {
     float crt_time = al_current_time();
-    if (crt_time - _last_shot > 0.5)
+    if (crt_time - _last_shot > 0.25)
     {
-        _lasers->push_back(Laser(_centre + Vector(1000, 0) * 0.05, al_map_rgb(0, 0, 255), Vector(1000, 0)));
+        _lasers->push_back(Laser(_centre + Point(0, -10) + Vector(1000, 0) * 0.05, al_map_rgb(0, 0, 255), Vector(1000, 0)));
+        _lasers->push_back(Laser(_centre + Point(0, 10) + Vector(1000, 0) * 0.05, al_map_rgb(0, 0, 255), Vector(1000, 0)));
         _last_shot = crt_time;
     }
 }

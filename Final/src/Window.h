@@ -23,11 +23,8 @@
 #include "Mine.h"
 #include "EnemyController.h"
 #include "GameController.h"
-<<<<<<< HEAD
 #include "Sniper.h"
-=======
 #include "Boss.h"
->>>>>>> origin/tiros-do-boss
 
 #include <list>
 #include <vector>
@@ -91,16 +88,11 @@ private:
    std::list<Laser> _player_lasers;
    std::list<Mine> _mines;
    std::list<Laser> _enemy_lasers;
-<<<<<<< HEAD
    std::list<Enemy *> _control_enemies;
-=======
-   std::list<Enemy> _control_enemies;
-   std::list<Laser> _boss_lasers;
    std::list<Missile> _missiles;
-   
+
    // missile frames
-   std::vector< std::shared_ptr<Sprite> > _missile_frames;
->>>>>>> origin/tiros-do-boss
+   std::vector<std::shared_ptr<Sprite>> _missile_frames;
 
    // allegro objects
    ALLEGRO_TIMER *_timer;
@@ -123,12 +115,10 @@ private:
 
    Thread *_game_controller_thread;
 
-<<<<<<< HEAD
    Thread *_sniper_thread;
-=======
+
    Boss *_boss;
    Thread *_boss_thread;
->>>>>>> origin/tiros-do-boss
 };
 
 #endif

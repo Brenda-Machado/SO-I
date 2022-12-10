@@ -8,7 +8,7 @@ Missile::Missile(Point pos, Vector spe)
     _speed = spe;
     active = true;
     an_frm = 0;
-    _angle = atan(spe.y/spe.x)+4.71;
+    _angle = atan(spe.y / spe.x) + 4.71;
 }
 void Missile::update_pos(float dt)
 {

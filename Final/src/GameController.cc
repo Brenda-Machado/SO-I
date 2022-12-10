@@ -7,7 +7,7 @@ GameController::GameController(Ship *ship,
                                std::list<Laser> *player_lasers,
                                std::list<Mine> *mines,
                                std::list<Enemy *> *enemies,
-                               Boss *boss, std::list<Laser> *boss_lasers,
+                               Boss *boss,
                                std::list<Missile> *missiles)
 {
     _enemy_lasers = enemy_lasers;
@@ -18,7 +18,6 @@ GameController::GameController(Ship *ship,
     _last_update = 0;
     _crt_time = al_get_time();
     _boss = boss;
-    _boss_lasers = boss_lasers;
     _missiles = missiles;
 }
 
@@ -26,7 +25,7 @@ void GameController::start(Ship *ship, std::list<Laser> *enemy_lasers,
                            std::list<Laser> *player_lasers,
                            std::list<Mine> *mines,
                            std::list<Enemy *> *enemies,
-                           Boss *boss, std::list<Laser> *boss_lasers,
+                           Boss *boss,
                            std::list<Missile> *missiles)
 {
     GameController controller = GameController(ship,
@@ -35,7 +34,6 @@ void GameController::start(Ship *ship, std::list<Laser> *enemy_lasers,
                                                mines,
                                                enemies,
                                                boss,
-                                               boss_lasers,
                                                missiles);
     controller.run();
     Thread::exit_running(9);
@@ -47,7 +45,6 @@ void GameController::run()
         _crt_time = al_get_time();
         update_lasers(_player_lasers);
         update_lasers(_enemy_lasers);
-        update_lasers(_boss_lasers);
         update_missiles(_missiles);
         check_enemy_collisions();
         check_mine_collisions();
@@ -55,6 +52,7 @@ void GameController::run()
         check_player_collisions();
         check_ship_enemy_collisions();
         check_ship_mine_collisions();
+        check_ship_missile_collisions();
         _last_update = _crt_time;
         Thread::yield();
     }
@@ -148,6 +146,21 @@ void GameController::check_player_collisions()
             laser++;
     }
 }
+
+void GameController::check_boss_collisions()
+{
+    for (auto laser = _player_lasers->begin(); laser != _player_lasers->end();)
+    {
+        if (collision_happened(laser->centre, _boss->getPosition(), _boss->getSize()))
+        {
+            laser = _enemy_lasers->erase(laser);
+            _boss->hit();
+        }
+        else
+            laser++;
+    }
+}
+
 void GameController::check_ship_enemy_collisions()
 {
     for (auto enemy = _enemies->begin(); enemy != _enemies->end();)
@@ -182,28 +195,20 @@ void GameController::check_ship_mine_collisions()
     }
 }
 
-void GameController::check_boss_collisions()
+void GameController::check_ship_missile_collisions()
 {
-    if (_boss->isAlive())
+
+    for (auto enemy = _missiles->begin(); enemy != _missiles->end();)
     {
-        // for (auto laser = _player_lasers->begin(); laser != _player_lasers->end(); laser++)
-        // {
-        //     if (collision_happened(laser->centre, _boss->getPosition(), 200))
-        //     {
-        //         _player_lasers->erase(laser);
-        //         _boss->hit();
-        //         return;
-        //     }
-        // }
-        // for (auto laser = _boss_lasers->begin(); laser != _boss_lasers->end(); laser++)
-        // {
-        //     if (collision_happened(laser->centre, _ship->getPosition(), _ship->get_size()))
-        //     {
-        //         _boss_lasers->erase(laser);
-        //         // _ship->hit();
-        //         return;
-        //     }
-        // }
+        if (collision_happened(_ship->get_centre(),
+                               enemy->_position,
+                               _ship->get_size()))
+        {
+            _ship->get_hurt(_crt_time);
+            enemy = _missiles->erase(enemy);
+        }
+        else
+            enemy++;
     }
 }
 
