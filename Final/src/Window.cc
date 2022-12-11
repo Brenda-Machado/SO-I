@@ -31,6 +31,7 @@ Window::Window(ALLEGRO_EVENT_QUEUE *ev, ALLEGRO_DISPLAY *dis, ALLEGRO_TIMER *tim
    _display = dis;
    _event_handler = NULL;
    _enemy_controller = NULL;
+   _game_over = false;
    init();
 }
 
@@ -177,57 +178,69 @@ void Window::update(double dt)
 // draws for the game mode
 void Window::draw()
 {
-   drawBackground();
-   if (!_ship->get_end())
-   {
-      drawShip(_ship->sprite, 0);
-   }
-
-   drawLife();
-
-   if (_boss->isAlive())
-   {
-      drawBoss(_boss->_sprite, 0);
-   }
-
-   for (auto iter = _player_lasers.begin(); iter != _player_lasers.end(); iter++)
-   {
-      drawLaser(*iter);
-   }
-
-   for (auto iter = _enemy_lasers.begin(); iter != _enemy_lasers.end(); iter++)
-   {
-      drawLaser(*iter);
-   }
-
-   for (auto iter = _missiles.begin(); iter != _missiles.end(); iter++)
-   {
-      drawMissile(*iter);
-   }
-   for (auto iter = _player_missiles.begin(); iter != _player_missiles.end(); iter++)
-   {
-      drawMissile(*iter);
-   }
-   for (auto iter = _mines.begin(); iter != _mines.end(); iter++)
-   {
-      drawMine(spikeBomb, *iter);
-   }
-   for (auto iter = _explosions.begin(); iter != _explosions.end();)
-   {
-      drawExplosion(*iter);
-      if (iter->isFinished())
-         iter = _explosions.erase(iter);
-      else
+   if (!_game_over) {
+      drawBackground();
+      if (!_ship->get_end())
       {
-         iter->_frame++;
-         iter++;
+         drawShip(_ship->sprite, 0);
+      } else {
+         _game_over = true;
       }
+
+      drawLife();
+
+      if (_boss->isAlive())
+      {
+         drawBoss(_boss->_sprite, 0);
+      }
+
+      for (auto iter = _player_lasers.begin(); iter != _player_lasers.end(); iter++)
+      {
+         drawLaser(*iter);
+      }
+
+      for (auto iter = _enemy_lasers.begin(); iter != _enemy_lasers.end(); iter++)
+      {
+         drawLaser(*iter);
+      }
+
+      for (auto iter = _missiles.begin(); iter != _missiles.end(); iter++)
+      {
+         drawMissile(*iter);
+      }
+      for (auto iter = _player_missiles.begin(); iter != _player_missiles.end(); iter++)
+      {
+         drawMissile(*iter);
+      }
+      for (auto iter = _mines.begin(); iter != _mines.end(); iter++)
+      {
+         drawMine(spikeBomb, *iter);
+      }
+      for (auto iter = _explosions.begin(); iter != _explosions.end();)
+      {
+         drawExplosion(*iter);
+         if (iter->isFinished())
+            iter = _explosions.erase(iter);
+         else
+         {
+            iter->_frame++;
+            iter++;
+         }
+      }
+      std::cout << "number of enemies = " << _control_enemies.size() << std::endl;
+      for (auto iter = _control_enemies.begin(); iter != _control_enemies.end(); iter++)
+      {
+         drawEnemy(*iter);
+      }
+   } else {
+      drawBackground();
+      drawGameOver();
    }
-   std::cout << "number of enemies = " << _control_enemies.size() << std::endl;
-   for (auto iter = _control_enemies.begin(); iter != _control_enemies.end(); iter++)
-   {
-      drawEnemy(*iter);
-   }
+}
+
+void Window::drawGameOver() 
+{  
+   al_draw_text(font, al_map_rgb(255, 255, 255), 400, 300, ALLEGRO_ALIGN_CENTRE, "GAME OVER");
 }
 
 void Window::drawShip(std::shared_ptr<Sprite> sprite, int flags)
@@ -294,11 +307,15 @@ void Window::loadSprites()
    _ship->sprite = std::make_shared<Sprite>("Sprite2.png"); // espaçonave do usuário
    bg = std::make_shared<Sprite>("BGstars.png");            // fundo da tela - background
 
-   // explosion = std::make_shared<Sprite>("explode.png");
+   // bomb
    spikeBomb = std::make_shared<Sprite>("spikebomb.png");
 
+   // enemies
    enemy = std::make_shared<Sprite>("EnemyBasic.png"); // inimigo
    _boss->_sprite = std::make_shared<Sprite>("bossv2.png");
+
+   // font
+   font = al_load_font("DavidCLM-BoldItalic.ttf", 80, 0);
 
    // explosion
    _explosion = std::make_shared<Sprite>("explode.png");

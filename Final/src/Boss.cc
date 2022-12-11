@@ -57,7 +57,7 @@ void Boss::bossLoop()
 
     float _crt_time = al_current_time();
 
-    if (_crt_time - _last_spawn > 10 && !_alive)
+    if (_crt_time - _last_spawn > 60 && !_alive)
     {
         std::cout << "Boss spawn" << std::endl;
         give_life();

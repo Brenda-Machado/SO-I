@@ -15,6 +15,7 @@
 #include "Sprite.h"
 #include "Vector.h"
 #include "Action.h"
+#include "Font.h"
 
 #include "EventHandler.h"
 #include "thread.h"
@@ -71,8 +72,10 @@ private:
    void drawMissile(Missile missile);
    void drawExplosion(Explosion explosion);
    void drawLife();
+   void drawGameOver();
    
    // Background
+
    Point bgMid; /**<point used by the background to draw from */
    Point fgMid;
    Point fg2Mid;
@@ -103,8 +106,10 @@ private:
    ALLEGRO_TIMER *_timer;
    ALLEGRO_EVENT_QUEUE *_eventQueue;
    ALLEGRO_DISPLAY *_display;
-
+   ALLEGRO_FONT *font;
+   
    bool _finish;
+   bool _game_over;
 
    // Thread variables
    EventHandler *_event_handler;
