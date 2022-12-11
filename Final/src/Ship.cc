@@ -9,14 +9,16 @@
 #include <stdexcept>
 #include <iostream>
 
-Ship::Ship(Point centre, ALLEGRO_COLOR color, EventHandler *event_handler, std::list<Laser> *lasers)
+Ship::Ship(Point centre, ALLEGRO_COLOR color, EventHandler *event_handler, std::list<Laser> *lasers, std::list<Missile> *missiles)
 {
     _centre = centre;
     _color = color;
     _event_handler = event_handler;
     _finish = false;
     _lasers = lasers;
+    _missiles = missiles;
     _last_shot = 0;
+    _last_missile = 0;
     _health = 3;
     _size = 10;
     _last_hurt = 0;
@@ -104,6 +106,7 @@ void Ship::setSpeed()
     if (_event_handler->get_pressed_keys(act::action::FIRE_SECONDARY))
     {
         std::cout << "missel\n";
+        createMissile();
     }
     if (_event_handler->get_pressed_keys(act::action::FIRE_PRIMARY))
     {
@@ -125,7 +128,17 @@ void Ship::checkBoundary()
     else if (_centre.y < 16)
         _centre.y = 16;
 }
-
+void Ship::createMissile()
+{
+    float crt_time = al_get_time();
+    if (crt_time - _last_missile > 1)
+    {
+        Missile m = Missile(_centre + Point(10, 0), Vector(300, 0));
+        m._angle = m._angle * -1;
+        _missiles->push_back(m);
+        _last_missile = crt_time;
+    }
+}
 void Ship::selectShipAnimation()
 {
     if (_speed.x > 0)

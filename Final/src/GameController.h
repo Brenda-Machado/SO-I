@@ -38,6 +38,7 @@ public:
                    std::list<Enemy *> *ememies,
                    Boss *boss,
                    std::list<Missile> *missiles,
+                   std::list<Missile> *player_missiles,
                    std::list<Explosion> *explosions);
 
     static void start(Ship *ship, std::list<Laser> *enemy_lasers,
@@ -46,13 +47,14 @@ public:
                       std::list<Enemy *> *enemies,
                       Boss *boss,
                       std::list<Missile> *missiles,
+                      std::list<Missile> *player_missiles,
                       std::list<Explosion> *explosions);
     static void end() { _finish = true; };
 
 private:
     void run();
     void update_lasers(std::list<Laser> *lasers);
-    void update_missiles(std::list<Missile> *missiles);
+    void update_missiles(std::list<Missile> *missiles, std::list<Missile> *player_missiles);
     void check_enemy_collisions();
     void check_mine_collisions();
     void check_player_collisions();
@@ -72,10 +74,12 @@ private:
     std::list<Mine> *_mines;
     std::list<Enemy *> *_enemies;
     std::list<Missile> *_missiles;
+    std::list<Missile> *_player_missiles;
     std::list<Explosion> *_explosions;
     static bool _finish;
     float _last_update;
     float _crt_time;
+    float _last_miss_hit;
 };
 
 #endif

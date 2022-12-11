@@ -9,6 +9,7 @@ GameController::GameController(Ship *ship,
                                std::list<Enemy *> *enemies,
                                Boss *boss,
                                std::list<Missile> *missiles,
+                               std::list<Missile> *player_missiles,
                                std::list<Explosion> *explosions)
 {
     _enemy_lasers = enemy_lasers;
@@ -17,9 +18,11 @@ GameController::GameController(Ship *ship,
     _mines = mines;
     _enemies = enemies;
     _last_update = 0;
+    _last_miss_hit = 0;
     _crt_time = al_get_time();
     _boss = boss;
     _missiles = missiles;
+    _player_missiles = player_missiles;
     _explosions = explosions;
 }
 
@@ -29,6 +32,7 @@ void GameController::start(Ship *ship, std::list<Laser> *enemy_lasers,
                            std::list<Enemy *> *enemies,
                            Boss *boss,
                            std::list<Missile> *missiles,
+                           std::list<Missile> *player_missiles,
                            std::list<Explosion> *explosions)
 {
     GameController controller = GameController(ship,
@@ -38,6 +42,7 @@ void GameController::start(Ship *ship, std::list<Laser> *enemy_lasers,
                                                enemies,
                                                boss,
                                                missiles,
+                                               player_missiles,
                                                explosions);
     controller.run();
     Thread::exit_running(9);
@@ -49,7 +54,7 @@ void GameController::run()
         _crt_time = al_get_time();
         update_lasers(_player_lasers);
         update_lasers(_enemy_lasers);
-        update_missiles(_missiles);
+        update_missiles(_missiles, _player_missiles);
         check_enemy_collisions();
         check_mine_collisions();
         check_boss_collisions();
@@ -109,6 +114,13 @@ bool GameController::enemy_has_colided(Enemy *enemy)
             return true;
         }
     }
+    for (auto missile = _player_missiles->begin(); missile != _player_missiles->end(); missile++)
+    {
+        if (collision_happened(missile->_position, enemy->getPosition(), enemy->get_size()))
+        {
+            return true;
+        }
+    }
     return false;
 }
 void GameController::check_mine_collisions()
@@ -133,6 +145,13 @@ bool GameController::mine_has_colided(Mine mine)
         if (collision_happened(laser->centre, mine.centre, mine.size))
         {
             _player_lasers->erase(laser);
+            return true;
+        }
+    }
+    for (auto missile = _player_missiles->begin(); missile != _player_missiles->end(); missile++)
+    {
+        if (collision_happened(missile->_position, mine.centre, mine.size))
+        {
             return true;
         }
     }
@@ -166,6 +185,20 @@ void GameController::check_boss_collisions()
         }
         else
             laser++;
+    }
+    for (auto missile = _player_missiles->begin(); missile != _player_missiles->end();)
+    {
+        bool can_get_hurt = (_crt_time - _last_miss_hit > 2);
+        if (collision_happened(missile->_position, _boss->getPosition(), _boss->getSize()) && can_get_hurt)
+        {
+            _explosions->push_back(Explosion(missile->_position, 0));
+            _last_miss_hit = _crt_time;
+            for (int i = 0; i < 30; i++)
+            {
+                _boss->hit();
+            }
+        }
+        missile++;
     }
 }
 
@@ -225,7 +258,7 @@ void GameController::check_ship_missile_collisions()
     }
 }
 
-void GameController::update_missiles(std::list<Missile> *missiles)
+void GameController::update_missiles(std::list<Missile> *missiles, std::list<Missile> *player_missiles)
 {
     for (auto missile = missiles->begin(); missile != missiles->end();)
     {
@@ -233,6 +266,18 @@ void GameController::update_missiles(std::list<Missile> *missiles)
         if (!missile->in_bound())
         {
             missile = missiles->erase(missile);
+        }
+        else
+        {
+            missile++;
+        }
+    }
+    for (auto missile = player_missiles->begin(); missile != player_missiles->end();)
+    {
+        missile->update_pos(_crt_time - _last_update);
+        if (!missile->in_bound())
+        {
+            missile = player_missiles->erase(missile);
         }
         else
         {

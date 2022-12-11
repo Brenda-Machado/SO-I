@@ -91,6 +91,7 @@ private:
    std::list<Laser> _enemy_lasers;
    std::list<Enemy *> _control_enemies;
    std::list<Missile> _missiles;
+   std::list<Missile> _player_missiles;
    std::list<Explosion> _explosions;
 
    // missile frames

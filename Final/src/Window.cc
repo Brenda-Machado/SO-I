@@ -71,6 +71,7 @@ void Window::init()
                                         &_control_enemies,
                                         _boss,
                                         &_missiles,
+                                        &_player_missiles,
                                         &_explosions);
 }
 
@@ -201,7 +202,10 @@ void Window::draw()
    {
       drawMissile(*iter);
    }
-
+   for (auto iter = _player_missiles.begin(); iter != _player_missiles.end(); iter++)
+   {
+      drawMissile(*iter);
+   }
    for (auto iter = _mines.begin(); iter != _mines.end(); iter++)
    {
       drawMine(spikeBomb, *iter);
@@ -255,7 +259,7 @@ void Window::drawExplosion(Explosion explosion)
 void Window::loadSprites()
 {
    // Create Ship
-   _ship = new Ship(Point(215, 245), al_map_rgb(0, 200, 0), _event_handler, &_player_lasers);
+   _ship = new Ship(Point(215, 245), al_map_rgb(0, 200, 0), _event_handler, &_player_lasers, &_player_missiles);
    _boss = new Boss(al_map_rgb(155, 0, 0), &_enemy_lasers, &_missiles);
 
    // represents the middle of the image width-wise, and top height-wise

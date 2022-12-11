@@ -19,13 +19,14 @@
 #include "EventHandler.h"
 #include "thread.h"
 #include "Laser.h"
+#include "Missile.h"
 
 #include <list>
 __USING_API
 class Ship
 {
 public:
-    Ship(Point centre, ALLEGRO_COLOR color, EventHandler *event_handler, std::list<Laser> *lasers);
+    Ship(Point centre, ALLEGRO_COLOR color, EventHandler *event_handler, std::list<Laser> *lasers, std::list<Missile> *missiles);
     static void start(Ship *ship);
     void run();
     void get_hurt(float crt_time);
@@ -50,6 +51,7 @@ private:
     void checkBoundary();
     void setSpeed();
     void createLaser();
+    void createMissile();
 
     Point _centre;
     ALLEGRO_COLOR _color;
@@ -63,8 +65,10 @@ private:
     float _prev_time;
     float _last_shot;
     float _last_hurt;
+    float _last_missile;
 
     std::list<Laser> *_lasers;
+    std::list<Missile> *_missiles;
     int _health;
     int _size;
 };
