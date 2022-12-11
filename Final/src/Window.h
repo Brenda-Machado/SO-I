@@ -70,6 +70,8 @@ private:
    void drawBoss(std::shared_ptr<Sprite> sprite, int flags);
    void drawMissile(Missile missile);
    void drawExplosion(Explosion explosion);
+   void drawLife();
+   
    // Background
    Point bgMid; /**<point used by the background to draw from */
    Point fgMid;

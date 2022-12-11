@@ -43,6 +43,7 @@ public:
     inline int get_col() const { return _col; };
     inline int get_size() const { return _size; };
     inline int get_end() const { return _finish; };
+    inline int get_health() const { return _health; };
 
 private:
     void shipLoop();
