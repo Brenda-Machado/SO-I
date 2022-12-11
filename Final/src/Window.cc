@@ -209,9 +209,13 @@ void Window::draw()
    for (auto iter = _explosions.begin(); iter != _explosions.end(); iter++)
    {
       drawExplosion(*iter);
-      if ((*iter).isFinished())
+      if (iter->isFinished())
          iter = _explosions.erase(iter);
-      (*iter)._frame++;
+      else
+      {
+         iter->_frame++;
+         iter++;
+      }
    }
    std::cout << "number of enemies = " << _control_enemies.size() << std::endl;
    for (auto iter = _control_enemies.begin(); iter != _control_enemies.end(); iter++)
@@ -278,7 +282,6 @@ void Window::loadSprites()
 
    // explosion
    _explosion = std::make_shared<Sprite>("explode.png");
-
 
    // missile frames
    _missile_frames.push_back(std::make_shared<Sprite>("m1.png"));
