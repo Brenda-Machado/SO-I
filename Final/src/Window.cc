@@ -183,6 +183,8 @@ void Window::draw()
       drawShip(_ship->sprite, 0);
    }
 
+   drawLife();
+
    if (_boss->isAlive())
    {
       drawBoss(_boss->_sprite, 0);
@@ -255,6 +257,20 @@ void Window::drawMissile(Missile missile)
 void Window::drawExplosion(Explosion explosion)
 {
    _explosion->draw_death_anim(explosion._frame, explosion._position, 0);
+}
+void Window::drawLife() {
+   if (_ship->get_health() > 0) {
+	  al_draw_rectangle(530, 50, 550, 70,
+			    al_map_rgb(0, 255, 0), 5);
+   }
+   if (_ship->get_health() > 1) {
+      al_draw_rectangle(490, 50, 510, 70,
+			al_map_rgb(0, 255, 0), 5);
+   }
+   if (_ship->get_health() > 2) {
+      al_draw_rectangle(450, 50, 470, 70,
+			al_map_rgb(0, 255, 0) , 5);
+   }
 }
 void Window::loadSprites()
 {
