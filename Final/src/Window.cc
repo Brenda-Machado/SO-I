@@ -206,7 +206,7 @@ void Window::draw()
    {
       drawMine(spikeBomb, *iter);
    }
-   for (auto iter = _explosions.begin(); iter != _explosions.end(); iter++)
+   for (auto iter = _explosions.begin(); iter != _explosions.end();)
    {
       drawExplosion(*iter);
       if (iter->isFinished())

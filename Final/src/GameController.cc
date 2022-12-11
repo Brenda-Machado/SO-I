@@ -116,7 +116,7 @@ void GameController::check_mine_collisions()
     for (auto enemy = _mines->begin(); enemy != _mines->end();)
     {
         if (mine_has_colided(*enemy))
-        {   
+        {
             _explosions->push_back(Explosion((*enemy).getCentre(), 0));
             enemy = _mines->erase(enemy);
         }
@@ -146,6 +146,7 @@ void GameController::check_player_collisions()
         if (collision_happened(laser->centre, _ship->get_centre(), _ship->get_size()))
         {
             laser = _enemy_lasers->erase(laser);
+            _explosions->push_back(Explosion(_ship->get_centre(), 0));
             _ship->get_hurt(_crt_time);
         }
         else
@@ -159,7 +160,8 @@ void GameController::check_boss_collisions()
     {
         if (collision_happened(laser->centre, _boss->getPosition(), _boss->getSize()))
         {
-            laser = _enemy_lasers->erase(laser);
+            _explosions->push_back(Explosion(laser->centre, 0));
+            laser = _player_lasers->erase(laser);
             _boss->hit();
         }
         else
@@ -176,6 +178,8 @@ void GameController::check_ship_enemy_collisions()
                                _ship->get_size() + (*enemy)->get_size()))
         {
             _ship->get_hurt(_crt_time);
+            _explosions->push_back(Explosion((*enemy)->getPosition(), 0));
+            _explosions->push_back(Explosion(_ship->get_centre(), 0));
             delete *enemy;
             enemy = _enemies->erase(enemy);
         }
@@ -195,6 +199,8 @@ void GameController::check_ship_mine_collisions()
         {
             _ship->get_hurt(_crt_time);
             enemy = _mines->erase(enemy);
+            _explosions->push_back(Explosion(enemy->centre, 0));
+            _explosions->push_back(Explosion(_ship->get_centre(), 0));
         }
         else
             enemy++;
@@ -212,6 +218,7 @@ void GameController::check_ship_missile_collisions()
         {
             _ship->get_hurt(_crt_time);
             enemy = _missiles->erase(enemy);
+            _explosions->push_back(Explosion(_ship->get_centre(), 0));
         }
         else
             enemy++;
